@@ -2,6 +2,11 @@
   "name": "relay",
   "type": "module",
   "scripts": {
+    "app:build": "pnpm run --filter @relay/app build",
+    "app:build:check": "pnpm run --filter @relay/app build:check",
+    "app:dev": "pnpm run --filter @relay/app dev",
+    "app:format:check": "pnpm run --filter @relay/app format:check",
+    "app:format:write": "pnpm run --filter @relay/app format:write",
     "prepare": "husky"
   },
   "devDependencies": {
