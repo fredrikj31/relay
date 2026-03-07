@@ -8,10 +8,12 @@
     "app:lint": "pnpm run --filter @relay/app lint",
     "app:format:check": "pnpm run --filter @relay/app format:check",
     "app:format:write": "pnpm run --filter @relay/app format:write",
-    "prepare": "husky"
+    "prepare": "husky",
+    "pre-commit": "lint-staged -c lint-staged.config.js"
   },
   "devDependencies": {
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "lint-staged": "^16.3.2"
   },
   "packageManager": "pnpm@10.0.0",
   "engines": {
