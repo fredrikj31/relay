@@ -1,0 +1,15 @@
+services:
+  frontend:
+    container_name: relay-frontend
+    image: fredrikj31/relay-frontend:latest
+    restart: always
+    profiles:
+      - prod
+    networks:
+      - cloudflared
+    ports:
+      - 4003:80
+
+networks:
+  cloudflared:
+    external: true
