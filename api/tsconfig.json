@@ -16,5 +16,6 @@
     "declaration": false,
     "declarationMap": false
   },
-  "include": ["./src", "eslint.config.mts"]
+  "include": ["./src", "eslint.config.mts"],
+  "exclude": ["./build"]
 }
