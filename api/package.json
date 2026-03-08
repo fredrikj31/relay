@@ -8,5 +8,8 @@
     "lint": "eslint . --max-warnings 0",
     "format:check": "prettier . --check",
     "format:write": "prettier . --write"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
   }
 }
