@@ -1,0 +1,12 @@
+{
+  "name": "@relay/api",
+  "scripts": {
+    "dev": "tsx watch src/app.ts | pino-pretty",
+    "build": "tsc",
+    "build:check": "tsc --noEmit",
+    "start": "node build/app.js",
+    "lint": "eslint . --max-warnings 0",
+    "format:check": "prettier . --check",
+    "format:write": "prettier . --write"
+  }
+}
