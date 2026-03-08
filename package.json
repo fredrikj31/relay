@@ -8,6 +8,12 @@
     "app:lint": "pnpm run --filter @relay/app lint",
     "app:format:check": "pnpm run --filter @relay/app format:check",
     "app:format:write": "pnpm run --filter @relay/app format:write",
+    "api:build": "pnpm run --filter @relay/api build",
+    "api:build:check": "pnpm run --filter @relay/api build:check",
+    "api:dev": "pnpm run --filter @relay/api dev",
+    "api:lint": "pnpm run --filter @relay/api lint",
+    "api:format:check": "pnpm run --filter @relay/api format:check",
+    "api:format:write": "pnpm run --filter @relay/api format:write",
     "prepare": "husky",
     "pre-commit": "lint-staged -c lint-staged.config.js"
   },
