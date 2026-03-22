@@ -1,3 +1,9 @@
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   frontend:
     container_name: relay-frontend
@@ -9,6 +15,7 @@ services:
       - cloudflared
     ports:
       - 4003:80
+    logging: *default-logging
 
 networks:
   cloudflared:
