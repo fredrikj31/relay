@@ -5,6 +5,18 @@ x-logging: &default-logging
     max-file: "3"
 
 services:
+  backend:
+    container_name: relay-backend
+    image: fredrikj31/relay-backend:latest
+    restart: always
+    profiles:
+      - prod
+    networks:
+      - cloudflared
+    ports:
+      - 4002:3000
+    logging: *default-logging
+
   frontend:
     container_name: relay-frontend
     image: fredrikj31/relay-frontend:latest
