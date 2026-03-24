@@ -5,6 +5,42 @@ x-logging: &default-logging
     max-file: "3"
 
 services:
+  local-database:
+    container_name: relay-database
+    image: postgres:18-alpine
+    restart: always
+    profiles:
+      - dev
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: relay
+    ports:
+      - 5432:5432
+    volumes:
+      - database-data:/var/lib/postgresql/data # locally bound ".docker" folder
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql # init database with SQL files from local "database" folder
+    logging: *default-logging
+
+  database:
+    container_name: relay-database
+    image: postgres:18-alpine
+    restart: always
+    profiles:
+      - prod
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: relay
+    ports:
+      - 4000:5432
+    networks:
+      - relay-network
+    volumes:
+      - database-data:/var/lib/postgresql/data # store data from postgresql in the volume
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql # init database with SQL files from local "database" folder
+    logging: *default-logging
+
   backend:
     container_name: relay-backend
     image: fredrikj31/relay-backend:latest
@@ -30,5 +66,12 @@ services:
     logging: *default-logging
 
 networks:
+  relay-network:
+    driver: bridge
   cloudflared:
     external: true
+
+volumes:
+  database-data:
+    name: relay-database-data
+    driver: local
