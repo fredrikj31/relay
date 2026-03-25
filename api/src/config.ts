@@ -12,6 +12,7 @@ const envVarsSchema = z.object({
   DATABASE_USER: z.string(),
   DATABASE_PASSWORD: z.string(),
   DATABASE_NAME: z.string(),
+  TOKEN_PASSWORD_SALT: z.string(),
 });
 
 const envVars = envVarsSchema.safeParse(process.env);
@@ -31,5 +32,8 @@ export const config = {
     user: envVars.data.DATABASE_USER,
     password: envVars.data.DATABASE_PASSWORD,
     name: envVars.data.DATABASE_NAME,
+  },
+  token: {
+    passwordSalt: envVars.data.TOKEN_PASSWORD_SALT,
   },
 };
