@@ -13,4 +13,5 @@ DATABASE_PORT=5432
 DATABASE_USER=postgres
 DATABASE_PASSWORD=password
 DATABASE_NAME=relay
+TOKEN_PASSWORD_SALT= # Random generated string
 ```
