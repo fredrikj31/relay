@@ -53,6 +53,7 @@ services:
       DATABASE_NAME: relay
       DATABASE_USER: ${DATABASE_USER}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      TOKEN_PASSWORD_SALT: ${TOKEN_PASSWORD_SALT}
     networks:
       - cloudflared
     ports:
