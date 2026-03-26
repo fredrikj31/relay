@@ -12,8 +12,8 @@ services:
     profiles:
       - dev
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: relay
     ports:
       - 5432:5432
@@ -29,8 +29,8 @@ services:
     profiles:
       - prod
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: relay
     ports:
       - 4000:5432
@@ -47,6 +47,13 @@ services:
     restart: always
     profiles:
       - prod
+    environment:
+      DATABASE_HOST: relay-database
+      DATABASE_PORT: 5432 # Must be set to "5432", because the backend and database shares network
+      DATABASE_NAME: relay
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      TOKEN_PASSWORD_SALT: ${TOKEN_PASSWORD_SALT}
     networks:
       - cloudflared
     ports:

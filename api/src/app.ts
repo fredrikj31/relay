@@ -1,14 +1,23 @@
 import Fastify, { FastifyInstance } from "fastify";
 import { routes } from "./routes";
 import { config } from "./config";
+import { databasePlugin } from "./services/database/client";
 
 const app: FastifyInstance = Fastify({
   logger: true,
 });
 
-app.after(() => {
-  app.register(routes, { prefix: "/api" });
-});
+app
+  .register(databasePlugin, {
+    dbHost: config.database.host,
+    dbPort: config.database.port,
+    dbUser: config.database.user,
+    dbPassword: config.database.password,
+    dbName: config.database.name,
+  })
+  .after(() => {
+    app.register(routes, { prefix: "/api" });
+  });
 
 app.listen({ host: "0.0.0.0", port: config.api.port }, (err: Error | null) => {
   if (err) {

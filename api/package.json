@@ -1,7 +1,7 @@
 {
   "name": "@relay/api",
   "scripts": {
-    "dev": "tsx watch src/app.ts | pino-pretty",
+    "dev": "tsx watch --include src src/app.ts | pino-pretty",
     "build": "tsc -p tsconfig.build.json",
     "build:check": "tsc --noEmit",
     "start": "node build/app.js",
@@ -24,6 +24,9 @@
   "dependencies": {
     "fastify": "^5.8.3",
     "fastify-type-provider-zod": "^6.1.0",
+    "pino": "^10.3.1",
+    "slonik": "^48.13.2",
+    "slonik-interceptor-field-name-transformation": "^48.13.2",
     "zod": "^4.3.6"
   }
 }
