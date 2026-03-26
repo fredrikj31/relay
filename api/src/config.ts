@@ -34,6 +34,10 @@ export const config = {
     password: envVars.data.DATABASE_PASSWORD,
     name: envVars.data.DATABASE_NAME,
   },
+  jwt: {
+    accessTokenTTLSeconds: 60 * 60 * 24, // 24 hours
+    refreshTokenTTLSeconds: 60 * 60 * 24 * 30, // 30 days
+  },
   token: {
     passwordSalt: envVars.data.TOKEN_PASSWORD_SALT,
     jwtPrivateKey: envVars.data.TOKEN_JWT_PRIVATE_KEY,
