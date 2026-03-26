@@ -14,4 +14,5 @@ DATABASE_USER=postgres
 DATABASE_PASSWORD=password
 DATABASE_NAME=relay
 TOKEN_PASSWORD_SALT= # Random generated string
+TOKEN_JWT_PRIVATE_KEY= # Random generated string
 ```

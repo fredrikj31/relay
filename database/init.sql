@@ -36,3 +36,15 @@ CREATE TABLE IF NOT EXISTS profile (
 ALTER TABLE ONLY profile ADD CONSTRAINT profile_username_unique_key UNIQUE (username);
 ALTER TABLE ONLY profile ADD CONSTRAINT profile_user_id_references FOREIGN KEY(user_id) REFERENCES account(user_id);
 ---
+
+--- refresh token table
+CREATE TABLE IF NOT EXISTS refresh_token (
+  id uuid NOT NULL,
+  user_id uuid NOT NULL,
+  expires_at timestamp NOT NULL
+);
+
+ALTER TABLE ONLY refresh_token ADD CONSTRAINT refresh_token_id_primary_key PRIMARY KEY (id);
+ALTER TABLE ONLY refresh_token ADD CONSTRAINT refresh_token_id_unique_key UNIQUE (id);
+ALTER TABLE ONLY refresh_token ADD CONSTRAINT refresh_token_user_id_references FOREIGN KEY(user_id) REFERENCES account(user_id);
+---

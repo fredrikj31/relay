@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.5.0",
     "dotenv": "^17.3.1",
     "eslint": "^10.1.0",
@@ -22,8 +23,11 @@
     "typescript-eslint": "^8.57.2"
   },
   "dependencies": {
+    "@fastify/cookie": "^11.0.2",
     "fastify": "^5.8.3",
+    "fastify-plugin": "^5.1.0",
     "fastify-type-provider-zod": "^6.1.0",
+    "jsonwebtoken": "^9.0.3",
     "pino": "^10.3.1",
     "slonik": "^48.13.2",
     "slonik-interceptor-field-name-transformation": "^48.13.2",

@@ -54,6 +54,7 @@ services:
       DATABASE_USER: ${DATABASE_USER}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       TOKEN_PASSWORD_SALT: ${TOKEN_PASSWORD_SALT}
+      TOKEN_JWT_PRIVATE_KEY: ${TOKEN_JWT_PRIVATE_KEY}
     networks:
       - cloudflared
     ports:

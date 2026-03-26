@@ -13,6 +13,7 @@ const envVarsSchema = z.object({
   DATABASE_PASSWORD: z.string(),
   DATABASE_NAME: z.string(),
   TOKEN_PASSWORD_SALT: z.string(),
+  TOKEN_JWT_PRIVATE_KEY: z.string(),
 });
 
 const envVars = envVarsSchema.safeParse(process.env);
@@ -33,7 +34,12 @@ export const config = {
     password: envVars.data.DATABASE_PASSWORD,
     name: envVars.data.DATABASE_NAME,
   },
+  jwt: {
+    accessTokenTTLSeconds: 60 * 60 * 24, // 24 hours
+    refreshTokenTTLSeconds: 60 * 60 * 24 * 30, // 30 days
+  },
   token: {
     passwordSalt: envVars.data.TOKEN_PASSWORD_SALT,
+    jwtPrivateKey: envVars.data.TOKEN_JWT_PRIVATE_KEY,
   },
 };
