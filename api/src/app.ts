@@ -1,4 +1,5 @@
 import Fastify, { FastifyInstance } from "fastify";
+import fastifyCookie from "@fastify/cookie";
 import { routes } from "./routes";
 import { config } from "./config";
 import { databasePlugin } from "./services/database/client";
@@ -8,6 +9,12 @@ const app: FastifyInstance = Fastify({
 });
 
 app
+  .register(fastifyCookie, {
+    parseOptions: {
+      path: "/",
+      sameSite: true,
+    },
+  })
   .register(databasePlugin, {
     dbHost: config.database.host,
     dbPort: config.database.port,
