@@ -1,7 +1,7 @@
 {
   "name": "@relay/api",
   "scripts": {
-    "dev": "tsx watch src/app.ts | pino-pretty",
+    "dev": "tsx watch --include src src/app.ts | pino-pretty",
     "build": "tsc -p tsconfig.build.json",
     "build:check": "tsc --noEmit",
     "start": "node build/app.js",
