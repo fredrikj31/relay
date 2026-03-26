@@ -6,6 +6,18 @@ meta {
 
 post {
   url: {{host}}/signup
-  body: none
+  body: json
   auth: inherit
+}
+
+body:json {
+  {
+    "email": "johndoe@mail.com",
+    "password": "password",
+    "username": "JohnDoe",
+    "firstName": "John",
+    "lastName": "Doe",
+    "birthDate": "1970-01-01",
+    "gender": "MALE"
+  }
 }
