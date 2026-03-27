@@ -1,0 +1,26 @@
+script:pre-request {
+  const {atob} = require("atob");
+  const axios = require("axios");
+  
+  const host = bru.getEnvVar("host");
+  const accessToken = bru.getEnvVar("access_token");
+  const refreshToken = bru.getEnvVar("refresh_token");
+  
+  if (req.url.includes("/healthcheck") || req.url.includes("/signup") || req.url.includes("/login") || req.url.includes("/token")) { 
+    return;
+  }
+  
+  const decodedAccessToken = JSON.parse(atob(accessToken.split(".")[1]));
+  const accessTokenExpiresAt = decodedAccessToken.exp;
+  
+  if (accessTokenExpiresAt < (new Date().getTime() / 1000)) {
+    const {headers} = await axios.post(`${host}/token`, {
+      refreshToken,
+    });
+    
+    const cookies = headers.get("set-cookie");
+    const accessTokenCookie = cookies.find((cookie) => cookie.includes("access_token"));
+    const accessToken = accessTokenCookie.match(/access_token=([^;]+)/)[1];
+    bru.setEnvVar("access_token", accessToken);
+  }
+}
