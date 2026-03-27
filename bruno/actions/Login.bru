@@ -16,3 +16,15 @@ body:json {
     "password": "password"
   }
 }
+
+script:post-response {
+  const cookies = res.getHeader("set-cookie");
+  const accessTokenCookie = cookies.find((cookie) => cookie.includes("access_token"));
+  const refreshTokenCookie = cookies.find((cookie) => cookie.includes("refresh_token"));
+  const accessToken = accessTokenCookie.match(/access_token=([^;]+)/)[1];
+  const refreshToken = refreshTokenCookie.match(/refresh_token=([^;]+)/)[1];
+  
+  bru.setEnvVar("access_token", accessToken);
+  bru.setEnvVar("refresh_token", refreshToken);
+  
+}
