@@ -5,8 +5,9 @@ import { signupHandler } from "./handlers/signup";
 import z from "zod";
 import { AccountSchema } from "../../types/account";
 import { loginHandler } from "./handlers/login";
-import { NotFoundError } from "../../errors/client";
+import { BadRequestError, NotFoundError } from "../../errors/client";
 import { logoutHandler } from "./handlers/logout";
+import { tokenHandler } from "./handlers/token";
 
 export const actionRoutes: FastifyPluginAsync = async (instance) => {
   const app = instance.withTypeProvider<ZodTypeProvider>();
@@ -114,6 +115,50 @@ export const actionRoutes: FastifyPluginAsync = async (instance) => {
       res.clearCookie("refresh_token");
 
       return res.status(200).send();
+    },
+  );
+
+  app.post(
+    "/token",
+    {
+      schema: {
+        summary: "Refreshes user access token",
+        description:
+          "Refreshes a user's access token with use of their refresh token",
+        tags: ["actions"],
+        body: z.object({
+          refreshToken: z.string(),
+        }),
+        response: {
+          "400": z.object({
+            code: z.string(),
+            message: z.string(),
+          }),
+          "204": z.void(),
+        },
+      },
+    },
+    async (req, res) => {
+      // Get refresh token from cookies
+      const { refreshToken } = req.body;
+      if (!refreshToken) {
+        throw new BadRequestError({
+          code: "refresh-token-body-not-found",
+          message: "Could not find refresh token in the body of the request",
+        });
+      }
+
+      // Refreshes access token with access token
+      const { accessToken, expiresAt } = await tokenHandler({
+        database,
+        refreshToken,
+      });
+
+      // Sets new access token in the cookies
+      res.setCookie("access_token", accessToken, {
+        expires: new Date(expiresAt),
+      });
+      return res.status(204).send();
     },
   );
 };
