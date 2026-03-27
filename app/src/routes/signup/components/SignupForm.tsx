@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "@shadcn-ui/components/ui/select";
 import { DatePickerInput } from "@shadcn-ui/components/ui/date-picker-input";
+import { Link } from "@tanstack/react-router";
 
 const GENDER_SELECT_ITEMS = [
   { label: "Select Gender", value: null },
@@ -54,7 +55,7 @@ export function SignupForm({ className, ...props }: ComponentProps<"div">) {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="johndoe@mail.com"
                   required
                 />
               </Field>
@@ -114,7 +115,7 @@ export function SignupForm({ className, ...props }: ComponentProps<"div">) {
               <Field>
                 <Button type="submit">Create Account</Button>
                 <FieldDescription className="text-center">
-                  Already have an account? <a href="#">Sign in</a>
+                  Already have an account? <Link to="/login">Log in</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
