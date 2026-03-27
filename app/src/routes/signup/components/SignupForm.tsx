@@ -55,7 +55,7 @@ export function SignupForm({ className, ...props }: ComponentProps<"div">) {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="johndoe@mail.com"
                   required
                 />
               </Field>
