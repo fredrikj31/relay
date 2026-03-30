@@ -16,6 +16,7 @@ import { cn } from "@shadcn-ui/lib/utils";
 import { Link, useLocation } from "@tanstack/react-router";
 import {
   Archive,
+  House,
   LucideProps,
   MessageCircle,
   Settings,
@@ -32,7 +33,8 @@ const NAV_ITEMS: {
   label: string;
   link: keyof FileRoutesByTo;
 }[] = [
-  { id: "chats", icon: MessageCircle, label: "Chats", link: "/" },
+  { id: "home", icon: House, label: "Home", link: "/" },
+  { id: "messages", icon: MessageCircle, label: "Messages", link: "/messages" },
   { id: "contacts", icon: Users, label: "Contacts", link: "/contacts" },
   { id: "archived", icon: Archive, label: "Archived", link: "/archive" },
 ];
