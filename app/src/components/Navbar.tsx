@@ -22,6 +22,7 @@ import {
   Users,
 } from "lucide-react";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
+import { FileRoutesByTo } from "src/routeTree.gen";
 
 const NAV_ITEMS: {
   id: string;
@@ -29,11 +30,11 @@ const NAV_ITEMS: {
     Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
   >;
   label: string;
-  link: string;
+  link: keyof FileRoutesByTo;
 }[] = [
   { id: "chats", icon: MessageCircle, label: "Chats", link: "/" },
-  { id: "contacts", icon: Users, label: "Contacts", link: "/" },
-  { id: "archived", icon: Archive, label: "Archived", link: "/" },
+  { id: "contacts", icon: Users, label: "Contacts", link: "/contacts" },
+  { id: "archived", icon: Archive, label: "Archived", link: "/archive" },
 ];
 
 export const Navbar = () => {
@@ -51,7 +52,7 @@ export const Navbar = () => {
           return (
             <Link
               key={id}
-              to="/"
+              to={link}
               aria-label={label}
               aria-current={isActive ? "page" : undefined}
               className={cn(
@@ -74,11 +75,24 @@ export const Navbar = () => {
       {/* Bottom: settings + avatar */}
       <div className="flex flex-col items-center gap-3 pb-1">
         <Link
-          to="/"
+          to="/settings"
           aria-label="Settings"
-          className="flex h-10 w-10 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+          aria-current={location.pathname === "/settings" ? "page" : undefined}
+          className={cn(
+            "relative flex h-10 w-10 items-center justify-center rounded-xl transition-colors",
+            location.pathname === "/settings"
+              ? "bg-primary/10 text-primary"
+              : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+          )}
         >
-          <Settings size={20} strokeWidth={1.8} />
+          {/* Active pill on the left edge */}
+          {location.pathname === "/settings" && (
+            <span className="absolute -left-3 h-5 w-1 rounded-r-full bg-primary" />
+          )}
+          <Settings
+            size={20}
+            strokeWidth={location.pathname === "/settings" ? 2.2 : 1.8}
+          />
         </Link>
 
         {/* Profile avatar with online dot */}
