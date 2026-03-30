@@ -11,7 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteRouteImport } from './routes/signup/route'
 import { Route as LoginRouteRouteImport } from './routes/login/route'
-import { Route as IndexRouteRouteImport } from './routes/index/route'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthenticatedSettingsRouteRouteImport } from './routes/_authenticated.settings/route'
+import { Route as AuthenticatedMessagesRouteRouteImport } from './routes/_authenticated.messages/route'
+import { Route as AuthenticatedContactsRouteRouteImport } from './routes/_authenticated.contacts/route'
+import { Route as AuthenticatedArchiveRouteRouteImport } from './routes/_authenticated.archive/route'
+import { Route as AuthenticatedIndexRouteRouteImport } from './routes/_authenticated.index/route'
 
 const SignupRouteRoute = SignupRouteRouteImport.update({
   id: '/signup',
@@ -23,38 +28,102 @@ const LoginRouteRoute = LoginRouteRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRouteRoute = IndexRouteRouteImport.update({
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedSettingsRouteRoute =
+  AuthenticatedSettingsRouteRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedMessagesRouteRoute =
+  AuthenticatedMessagesRouteRouteImport.update({
+    id: '/messages',
+    path: '/messages',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedContactsRouteRoute =
+  AuthenticatedContactsRouteRouteImport.update({
+    id: '/contacts',
+    path: '/contacts',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedArchiveRouteRoute =
+  AuthenticatedArchiveRouteRouteImport.update({
+    id: '/archive',
+    path: '/archive',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedIndexRouteRoute = AuthenticatedIndexRouteRouteImport.update({
   id: '/',
   path: '',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRouteRoute
+  '/': typeof AuthenticatedIndexRouteRoute
   '/login': typeof LoginRouteRoute
   '/signup': typeof SignupRouteRoute
+  '/archive': typeof AuthenticatedArchiveRouteRoute
+  '/contacts': typeof AuthenticatedContactsRouteRoute
+  '/messages': typeof AuthenticatedMessagesRouteRoute
+  '/settings': typeof AuthenticatedSettingsRouteRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRouteRoute
+  '/': typeof AuthenticatedIndexRouteRoute
   '/login': typeof LoginRouteRoute
   '/signup': typeof SignupRouteRoute
+  '/archive': typeof AuthenticatedArchiveRouteRoute
+  '/contacts': typeof AuthenticatedContactsRouteRoute
+  '/messages': typeof AuthenticatedMessagesRouteRoute
+  '/settings': typeof AuthenticatedSettingsRouteRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRouteRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/login': typeof LoginRouteRoute
   '/signup': typeof SignupRouteRoute
+  '/_authenticated/': typeof AuthenticatedIndexRouteRoute
+  '/_authenticated/archive': typeof AuthenticatedArchiveRouteRoute
+  '/_authenticated/contacts': typeof AuthenticatedContactsRouteRoute
+  '/_authenticated/messages': typeof AuthenticatedMessagesRouteRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRouteRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/signup'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/archive'
+    | '/contacts'
+    | '/messages'
+    | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/signup'
-  id: '__root__' | '/' | '/login' | '/signup'
+  to:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/archive'
+    | '/contacts'
+    | '/messages'
+    | '/settings'
+  id:
+    | '__root__'
+    | '/_authenticated'
+    | '/login'
+    | '/signup'
+    | '/_authenticated/'
+    | '/_authenticated/archive'
+    | '/_authenticated/contacts'
+    | '/_authenticated/messages'
+    | '/_authenticated/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRouteRoute: typeof IndexRouteRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   LoginRouteRoute: typeof LoginRouteRoute
   SignupRouteRoute: typeof SignupRouteRoute
 }
@@ -75,18 +144,72 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_authenticated': {
+      id: '/_authenticated'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteRouteImport
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/messages': {
+      id: '/_authenticated/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof AuthenticatedMessagesRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/contacts': {
+      id: '/_authenticated/contacts'
+      path: '/contacts'
+      fullPath: '/contacts'
+      preLoaderRoute: typeof AuthenticatedContactsRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/archive': {
+      id: '/_authenticated/archive'
+      path: '/archive'
+      fullPath: '/archive'
+      preLoaderRoute: typeof AuthenticatedArchiveRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/': {
+      id: '/_authenticated/'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedIndexRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedIndexRouteRoute: typeof AuthenticatedIndexRouteRoute
+  AuthenticatedArchiveRouteRoute: typeof AuthenticatedArchiveRouteRoute
+  AuthenticatedContactsRouteRoute: typeof AuthenticatedContactsRouteRoute
+  AuthenticatedMessagesRouteRoute: typeof AuthenticatedMessagesRouteRoute
+  AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedIndexRouteRoute: AuthenticatedIndexRouteRoute,
+  AuthenticatedArchiveRouteRoute: AuthenticatedArchiveRouteRoute,
+  AuthenticatedContactsRouteRoute: AuthenticatedContactsRouteRoute,
+  AuthenticatedMessagesRouteRoute: AuthenticatedMessagesRouteRoute,
+  AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRouteRoute: IndexRouteRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   LoginRouteRoute: LoginRouteRoute,
   SignupRouteRoute: SignupRouteRoute,
 }
