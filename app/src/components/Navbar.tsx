@@ -99,11 +99,17 @@ const NavbarItem = ({
   );
 };
 
-export const Navbar = () => {
+export const Navbar = ({ isNavbarOpen }: { isNavbarOpen: boolean }) => {
   const location = useLocation();
 
   return (
-    <aside className="flex h-screen w-16 shrink-0 flex-col items-center border-r border-border bg-sidebar py-3">
+    <aside
+      className={cn(
+        "h-screen w-16 shrink-0 flex-col items-center border-r border-border bg-sidebar py-3 flex absolute inset-y-0 left-0 z-20 transition-transform duration-300 ease-in-out",
+        "md:relative md:translate-x-0",
+        isNavbarOpen ? "translate-x-0" : "-translate-x-full",
+      )}
+    >
       {/* Top nav icons */}
       <nav
         className="flex flex-1 flex-col items-center gap-1 pt-1"

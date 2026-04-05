@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { cn } from "@shadcn-ui/lib/utils";
-import { Search, Edit, Users } from "lucide-react";
+import { Search, Edit, Users, PanelLeftOpen } from "lucide-react";
 import { Conversation, conversations } from "../data/messages";
+import { useNavbar } from "../../../providers/navbar";
 
 export function MessageList() {
+  const { setIsNavbarOpen } = useNavbar();
   const [query, setQuery] = useState("");
 
   const filtered = conversations.filter((c) =>
@@ -11,9 +13,15 @@ export function MessageList() {
   );
 
   return (
-    <aside className="flex h-full w-80 flex-col border-r border-border bg-sidebar shrink-0">
+    <aside className="flex h-full w-full md:w-80 flex-col border-r border-border bg-sidebar shrink-0">
       {/* Header */}
       <div className="flex items-center justify-between px-5 pt-6 pb-4">
+        <button
+          className="size-8 block md:hidden text-muted-foreground"
+          onClick={() => setIsNavbarOpen(true)}
+        >
+          <PanelLeftOpen size={18} />
+        </button>
         <h1 className="text-xl font-semibold text-sidebar-foreground tracking-tight">
           Messages
         </h1>
