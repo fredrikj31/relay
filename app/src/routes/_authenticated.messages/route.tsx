@@ -6,9 +6,5 @@ export const Route = createFileRoute("/_authenticated/messages")({
 });
 
 function RouteComponent() {
-  return (
-    <div>
-      <MessageList />
-    </div>
-  );
+  return <MessageList />;
 }
