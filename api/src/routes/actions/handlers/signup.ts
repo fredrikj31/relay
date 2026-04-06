@@ -1,36 +1,33 @@
 import { CommonQueryMethods } from "slonik";
-import { createProfile } from "../../../services/database/queries/profile/createProfile";
-import { doesEmailExist } from "../../../services/database/queries/account/doesEmailExist";
-import { Profile } from "../../../types/profile";
+import { doesEmailExist } from "../../../services/database/queries/user/doesEmailExist";
 import { ConflictError } from "../../../errors/client";
 import { randomBytes, randomUUID } from "crypto";
 import { generateHash } from "../../../helpers/generateHash";
 import { config } from "../../../config";
-import { doesUsernameExist } from "../../../services/database/queries/profile/doesUsernameExist";
 import { Account } from "../../../types/account";
-import { createAccount } from "../../../services/database/queries/account/createAccount";
+import { createAccount } from "../../../services/database/queries/user/createAccount";
+import { doesUsernameExist } from "../../../services/database/queries/user/doesUsernameExist";
 
 interface SignupHandlerOptions {
   database: CommonQueryMethods;
-  user: {
-    username: string;
+  account: {
     email: string;
-    password: string;
+    username: string;
     firstName: string;
     lastName: string;
-    birthDate: string;
-    gender: string;
+    password: string;
   };
 }
 
 export const signupHandler = async ({
   database,
-  user,
+  account,
 }: SignupHandlerOptions): Promise<
-  Pick<Account, "userId" | "email"> &
-    Omit<Profile, "userId" | "createdAt" | "updatedAt" | "deletedAt">
+  Pick<Account, "id" | "email" | "username" | "firstName" | "lastName">
 > => {
-  const isEmailTaken = await doesEmailExist(database, { email: user.email });
+  const { email, username, firstName, lastName, password } = account;
+
+  const isEmailTaken = await doesEmailExist(database, { email });
   if (isEmailTaken) {
     throw new ConflictError({
       code: "email-already-exists",
@@ -39,7 +36,7 @@ export const signupHandler = async ({
   }
 
   const isUsernameTaken = await doesUsernameExist(database, {
-    username: user.username,
+    username,
   });
   if (isUsernameTaken) {
     throw new ConflictError({
@@ -48,38 +45,29 @@ export const signupHandler = async ({
     });
   }
 
-  const userId = randomUUID();
+  const id = randomUUID();
   const userSalt = randomBytes(20).toString("hex");
   const hashedPassword = generateHash({
-    password: user.password,
+    password: password,
     userSalt,
     salt: config.token.passwordSalt,
   });
 
-  const { email } = await createAccount(database, {
-    userId,
-    email: user.email,
-    hashedPassword,
-    passwordSalt: userSalt,
-  });
-
-  const { username, firstName, lastName, birthDate, gender } =
-    await createProfile(database, {
-      userId,
-      username: user.username,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      birthDate: user.birthDate,
-      gender: user.gender,
-    });
-
-  return {
-    userId,
+  await createAccount(database, {
+    id,
     email,
     username,
     firstName,
     lastName,
-    birthDate,
-    gender,
+    hashedPassword,
+    passwordSalt: userSalt,
+  });
+
+  return {
+    id,
+    email,
+    username,
+    firstName,
+    lastName,
   };
 };

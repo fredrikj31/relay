@@ -4,23 +4,37 @@ import { InternalServerError } from "../../../../errors/server";
 import { Account, AccountSchema } from "../../../../types/account";
 
 interface CreateAccountOptions {
-  userId: string;
+  id: string;
   email: string;
+  username: string;
+  firstName: string;
+  lastName: string;
   hashedPassword: string;
   passwordSalt: string;
 }
 
 export const createAccount = async (
   database: CommonQueryMethods,
-  { userId, email, hashedPassword, passwordSalt }: CreateAccountOptions,
+  {
+    id,
+    email,
+    username,
+    firstName,
+    lastName,
+    hashedPassword,
+    passwordSalt,
+  }: CreateAccountOptions,
 ): Promise<Account> => {
   return await database
     .one(
       sql.type(AccountSchema)`
       INSERT INTO
         account (
-          user_id,
+          id,
           email,
+          username,
+          first_name,
+          last_name,
           password,
           password_salt,
           created_at,
@@ -29,8 +43,11 @@ export const createAccount = async (
         )
       VALUES
         (
-          ${userId},
+          ${id},
           ${email},
+          ${username},
+          ${firstName},
+          ${lastName},
           ${hashedPassword},
           ${passwordSalt},
           ${new Date().toISOString()},

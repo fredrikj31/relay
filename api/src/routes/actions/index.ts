@@ -1,6 +1,5 @@
 import { FastifyPluginAsync } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { ProfileSchema } from "../../types/profile";
 import { signupHandler } from "./handlers/signup";
 import z from "zod";
 import { AccountSchema } from "../../types/account";
@@ -20,30 +19,26 @@ export const actionRoutes: FastifyPluginAsync = async (instance) => {
         summary: "Signs up a user",
         description: "Signs up the user and creates them in the database",
         tags: ["actions"],
-        body: z.object({
-          ...AccountSchema.pick({ email: true, password: true }).shape,
-          ...ProfileSchema.omit({
-            userId: true,
+        body: AccountSchema.pick({
+          email: true,
+          username: true,
+          firstName: true,
+          lastName: true,
+          password: true,
+        }),
+        response: {
+          "200": AccountSchema.omit({
             createdAt: true,
             updatedAt: true,
             deletedAt: true,
-          }).shape,
-        }),
-        response: {
-          "200": z.object({
-            ...AccountSchema.pick({ userId: true, email: true }).shape,
-            ...ProfileSchema.omit({
-              userId: true,
-              createdAt: true,
-              updatedAt: true,
-              deletedAt: true,
-            }).shape,
+            password: true,
+            passwordSalt: true,
           }),
         },
       },
     },
     async (req, res) => {
-      const createdUser = await signupHandler({ database, user: req.body });
+      const createdUser = await signupHandler({ database, account: req.body });
       return res.send(createdUser);
     },
   );

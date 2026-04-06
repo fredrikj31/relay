@@ -2,7 +2,7 @@ import { CommonQueryMethods } from "slonik";
 import { signJwt } from "../../../helpers/signJwt";
 import { randomUUID } from "crypto";
 import { config } from "../../../config";
-import { loginUser } from "../../../services/database/queries/account/loginUser";
+import { loginUser } from "../../../services/database/queries/user/loginUser";
 import { createRefreshToken } from "../../../services/database/queries/refreshToken/createRefreshToken";
 
 interface LoginHandlerOptions {
@@ -28,7 +28,7 @@ export const loginHandler = async ({
   database,
   credentials,
 }: LoginHandlerOptions): Promise<LoginHandlerOutput> => {
-  const user = await loginUser(database, {
+  const account = await loginUser(database, {
     email: credentials.email,
     password: credentials.password,
   });
@@ -38,8 +38,8 @@ export const loginHandler = async ({
   ).toISOString();
   const accessToken = signJwt({
     payload: {
-      userId: user.userId,
-      email: user.email,
+      accountId: account.id,
+      email: account.email,
     },
     expiresInSeconds: config.jwt.accessTokenTTLSeconds,
   });
@@ -56,7 +56,7 @@ export const loginHandler = async ({
 
   await createRefreshToken(database, {
     tokenId: refreshTokenId,
-    userId: user.userId,
+    accountId: account.id,
     expiresAt: new Date(
       new Date().getTime() + config.jwt.refreshTokenTTLSeconds * 1000,
     ).toISOString(),
