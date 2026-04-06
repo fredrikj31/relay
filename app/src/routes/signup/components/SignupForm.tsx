@@ -14,30 +14,18 @@ import {
   FieldLabel,
 } from "@shadcn-ui/components/ui/field";
 import { Input } from "@shadcn-ui/components/ui/input";
-import { ComponentProps } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@shadcn-ui/components/ui/select";
-import { DatePickerInput } from "@shadcn-ui/components/ui/date-picker-input";
+import { ComponentProps, useState } from "react";
 import { Link } from "@tanstack/react-router";
-
-const GENDER_SELECT_ITEMS = [
-  { label: "Select Gender", value: null },
-  { label: "Male", value: "MALE" },
-  { label: "Female", value: "FEMALE" },
-  {
-    label: "Prefer Not To Say",
-    value: "PREFER_NOT_TO_SAY",
-  },
-];
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@shadcn-ui/components/ui/input-group";
+import { AtSign, EyeIcon, EyeOffIcon } from "lucide-react";
 
 export function SignupForm({ className, ...props }: ComponentProps<"div">) {
+  const [isShowingPassword, setIsShowingPassword] = useState<boolean>(false);
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -60,18 +48,18 @@ export function SignupForm({ className, ...props }: ComponentProps<"div">) {
                 />
               </Field>
               <Field>
-                <Field className="grid grid-cols-2 gap-4">
-                  <Field>
-                    <FieldLabel htmlFor="password">Password</FieldLabel>
-                    <Input id="password" type="password" required />
-                  </Field>
-                  <Field>
-                    <FieldLabel htmlFor="confirm-password">
-                      Confirm Password
-                    </FieldLabel>
-                    <Input id="confirm-password" type="password" required />
-                  </Field>
-                </Field>
+                <FieldLabel htmlFor="username">Username</FieldLabel>
+                <InputGroup>
+                  <InputGroupInput
+                    id="username"
+                    type="username"
+                    placeholder="JohnDoe"
+                    required
+                  />
+                  <InputGroupAddon>
+                    <AtSign />
+                  </InputGroupAddon>
+                </InputGroup>
               </Field>
               <Field className="grid grid-cols-2 gap-4">
                 <Field>
@@ -88,29 +76,30 @@ export function SignupForm({ className, ...props }: ComponentProps<"div">) {
                   <Input id="lastName" type="text" required placeholder="Doe" />
                 </Field>
               </Field>
-              <Field className="grid grid-cols-2 gap-4">
-                <Field>
-                  <FieldLabel htmlFor="birthDate">Birth Date</FieldLabel>
-                  <DatePickerInput />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="gender">Gender</FieldLabel>
-                  <Select items={GENDER_SELECT_ITEMS}>
-                    <SelectTrigger className="w-full max-w-48">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Gender</SelectLabel>
-                        {GENDER_SELECT_ITEMS.map((item) => (
-                          <SelectItem key={item.value} value={item.value}>
-                            {item.label}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </Field>
+              <Field>
+                <FieldLabel htmlFor="password">Password</FieldLabel>
+                <InputGroup>
+                  <InputGroupInput
+                    id="password"
+                    type={isShowingPassword ? "text" : "password"}
+                    required
+                  />
+                  <InputGroupAddon align="inline-end">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() =>
+                        setIsShowingPassword((prevState) => !prevState)
+                      }
+                      className="text-muted-foreground focus-visible:ring-ring/50 cursor-pointer hover:bg-transparent"
+                    >
+                      {isShowingPassword ? <EyeOffIcon /> : <EyeIcon />}
+                      <span className="sr-only">
+                        {isShowingPassword ? "Hide password" : "Show password"}
+                      </span>
+                    </Button>
+                  </InputGroupAddon>
+                </InputGroup>
               </Field>
               <Field>
                 <Button type="submit">Create Account</Button>
