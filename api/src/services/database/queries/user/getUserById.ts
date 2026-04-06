@@ -9,12 +9,12 @@ import { NotFoundError } from "../../../../errors/client";
 import { Account, AccountSchema } from "../../../../types/account";
 
 interface GetAccountByIdOptions {
-  userId: string;
+  id: string;
 }
 
 export const getAccountById = async (
   database: CommonQueryMethods,
-  { userId }: GetAccountByIdOptions,
+  { id }: GetAccountByIdOptions,
 ): Promise<Account> => {
   try {
     return await database.one(sql.type(AccountSchema)`
@@ -23,7 +23,7 @@ export const getAccountById = async (
       FROM
         account
       WHERE
-        user_id = ${userId};
+        id = ${id};
     `);
   } catch (error) {
     if (error instanceof SlonikNotFoundError) {

@@ -14,13 +14,21 @@ import {
   FieldLabel,
 } from "@shadcn-ui/components/ui/field";
 import { Input } from "@shadcn-ui/components/ui/input";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "@tanstack/react-router";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@shadcn-ui/components/ui/input-group";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [isShowingPassword, setIsShowingPassword] = useState<boolean>(false);
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -52,7 +60,28 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <InputGroup>
+                  <InputGroupInput
+                    id="password"
+                    type={isShowingPassword ? "text" : "password"}
+                    required
+                  />
+                  <InputGroupAddon align="inline-end">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() =>
+                        setIsShowingPassword((prevState) => !prevState)
+                      }
+                      className="text-muted-foreground focus-visible:ring-ring/50 cursor-pointer hover:bg-transparent"
+                    >
+                      {isShowingPassword ? <EyeOffIcon /> : <EyeIcon />}
+                      <span className="sr-only">
+                        {isShowingPassword ? "Hide password" : "Show password"}
+                      </span>
+                    </Button>
+                  </InputGroupAddon>
+                </InputGroup>
               </Field>
               <Field>
                 <Button type="submit">Login</Button>

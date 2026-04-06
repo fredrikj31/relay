@@ -13,26 +13,26 @@ import { BadRequestError } from "../../../../errors/client";
 
 interface CreateRefreshTokenOptions {
   tokenId: string;
-  userId: string;
+  accountId: string;
   expiresAt: string;
 }
 
 export const createRefreshToken = async (
   database: CommonQueryMethods,
-  { tokenId, userId, expiresAt }: CreateRefreshTokenOptions,
+  { tokenId, accountId, expiresAt }: CreateRefreshTokenOptions,
 ): Promise<RefreshToken> => {
   try {
     return await database.one(sql.type(RefreshTokenSchema)`
       INSERT INTO
         refresh_token (
           id,
-          user_id,
+          account_id,
           expires_at
         )
       VALUES
         (
           ${tokenId},
-          ${userId},
+          ${accountId},
           ${expiresAt}
         )
       RETURNING *;
@@ -41,11 +41,11 @@ export const createRefreshToken = async (
     if (error instanceof ForeignKeyIntegrityConstraintViolationError) {
       logger.error(
         { error },
-        "User id doesn't match any user ids in users table",
+        "Account id doesn't match any account ids in accounts table",
       );
       throw new BadRequestError({
-        code: "user-id-not-found",
-        message: "The provided user id doesn't exists in users table",
+        code: "account-id-not-found",
+        message: "The provided account id doesn't exists in accounts table",
       });
     }
 

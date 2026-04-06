@@ -1,8 +1,11 @@
 import z from "zod";
 
 export const AccountSchema = z.object({
-  userId: z.uuid(),
+  id: z.uuid(),
   email: z.email(),
+  username: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
   password: z.string(),
   passwordSalt: z.string(),
   createdAt: z.iso.datetime(),

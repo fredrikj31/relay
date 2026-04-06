@@ -4,7 +4,7 @@ import { validateJwtToken } from "../../../helpers/validateJwtToken";
 import { signJwt } from "../../../helpers/signJwt";
 import { config } from "../../../config";
 import { getRefreshTokenById } from "../../../services/database/queries/refreshToken/getRefreshTokenById";
-import { getAccountById } from "../../../services/database/queries/account/getAccountById";
+import { getAccountById } from "../../../services/database/queries/user/getUserById";
 
 interface TokenHandlerOptions {
   database: CommonQueryMethods;
@@ -43,9 +43,9 @@ export const tokenHandler = async ({
     });
   }
 
-  // Get user details
-  const user = await getAccountById(database, {
-    userId: refreshTokenItem.userId,
+  // Get account details
+  const account = await getAccountById(database, {
+    id: refreshTokenItem.accountId,
   });
 
   const expiresAt = new Date(
@@ -55,7 +55,7 @@ export const tokenHandler = async ({
   // Sign new access token
   const accessToken = signJwt({
     payload: {
-      userId: user.userId,
+      userId: account.id,
     },
     expiresInSeconds: config.jwt.accessTokenTTLSeconds, // 24 hours
   });
