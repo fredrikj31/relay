@@ -16,4 +16,7 @@ DATABASE_PASSWORD=password
 DATABASE_NAME=relay
 TOKEN_PASSWORD_SALT= # Random generated string
 TOKEN_JWT_PRIVATE_KEY= # Random generated string
+
+# APP Environment Variables
+VITE_API_BASE_URL=http://127.0.0.1:3000/api
 ```
