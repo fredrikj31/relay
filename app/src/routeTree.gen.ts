@@ -13,10 +13,11 @@ import { Route as SignupRouteRouteImport } from './routes/signup/route'
 import { Route as LoginRouteRouteImport } from './routes/login/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedSettingsRouteRouteImport } from './routes/_authenticated.settings/route'
-import { Route as AuthenticatedMessagesRouteRouteImport } from './routes/_authenticated.messages/route'
 import { Route as AuthenticatedContactsRouteRouteImport } from './routes/_authenticated.contacts/route'
 import { Route as AuthenticatedArchiveRouteRouteImport } from './routes/_authenticated.archive/route'
 import { Route as AuthenticatedIndexRouteRouteImport } from './routes/_authenticated.index/route'
+import { Route as AuthenticatedMessagesIdRouteRouteImport } from './routes/_authenticated.messages.$id/route'
+import { Route as AuthenticatedMessagesIndexRouteRouteImport } from './routes/_authenticated.messages.index/route'
 
 const SignupRouteRoute = SignupRouteRouteImport.update({
   id: '/signup',
@@ -38,12 +39,6 @@ const AuthenticatedSettingsRouteRoute =
     path: '/settings',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedMessagesRouteRoute =
-  AuthenticatedMessagesRouteRouteImport.update({
-    id: '/messages',
-    path: '/messages',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedContactsRouteRoute =
   AuthenticatedContactsRouteRouteImport.update({
     id: '/contacts',
@@ -61,6 +56,18 @@ const AuthenticatedIndexRouteRoute = AuthenticatedIndexRouteRouteImport.update({
   path: '',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedMessagesIdRouteRoute =
+  AuthenticatedMessagesIdRouteRouteImport.update({
+    id: '/messages/$id',
+    path: '/messages/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedMessagesIndexRouteRoute =
+  AuthenticatedMessagesIndexRouteRouteImport.update({
+    id: '/messages/',
+    path: '/messages',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRouteRoute
@@ -68,8 +75,9 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRouteRoute
   '/archive': typeof AuthenticatedArchiveRouteRoute
   '/contacts': typeof AuthenticatedContactsRouteRoute
-  '/messages': typeof AuthenticatedMessagesRouteRoute
   '/settings': typeof AuthenticatedSettingsRouteRoute
+  '/messages/': typeof AuthenticatedMessagesIndexRouteRoute
+  '/messages/$id': typeof AuthenticatedMessagesIdRouteRoute
 }
 export interface FileRoutesByTo {
   '/': typeof AuthenticatedIndexRouteRoute
@@ -77,8 +85,9 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRouteRoute
   '/archive': typeof AuthenticatedArchiveRouteRoute
   '/contacts': typeof AuthenticatedContactsRouteRoute
-  '/messages': typeof AuthenticatedMessagesRouteRoute
   '/settings': typeof AuthenticatedSettingsRouteRoute
+  '/messages': typeof AuthenticatedMessagesIndexRouteRoute
+  '/messages/$id': typeof AuthenticatedMessagesIdRouteRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -88,8 +97,9 @@ export interface FileRoutesById {
   '/_authenticated/': typeof AuthenticatedIndexRouteRoute
   '/_authenticated/archive': typeof AuthenticatedArchiveRouteRoute
   '/_authenticated/contacts': typeof AuthenticatedContactsRouteRoute
-  '/_authenticated/messages': typeof AuthenticatedMessagesRouteRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRouteRoute
+  '/_authenticated/messages/': typeof AuthenticatedMessagesIndexRouteRoute
+  '/_authenticated/messages/$id': typeof AuthenticatedMessagesIdRouteRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -99,8 +109,9 @@ export interface FileRouteTypes {
     | '/signup'
     | '/archive'
     | '/contacts'
-    | '/messages'
     | '/settings'
+    | '/messages/'
+    | '/messages/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -108,8 +119,9 @@ export interface FileRouteTypes {
     | '/signup'
     | '/archive'
     | '/contacts'
-    | '/messages'
     | '/settings'
+    | '/messages'
+    | '/messages/$id'
   id:
     | '__root__'
     | '/_authenticated'
@@ -118,8 +130,9 @@ export interface FileRouteTypes {
     | '/_authenticated/'
     | '/_authenticated/archive'
     | '/_authenticated/contacts'
-    | '/_authenticated/messages'
     | '/_authenticated/settings'
+    | '/_authenticated/messages/'
+    | '/_authenticated/messages/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -158,13 +171,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/messages': {
-      id: '/_authenticated/messages'
-      path: '/messages'
-      fullPath: '/messages'
-      preLoaderRoute: typeof AuthenticatedMessagesRouteRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/contacts': {
       id: '/_authenticated/contacts'
       path: '/contacts'
@@ -186,6 +192,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/messages/$id': {
+      id: '/_authenticated/messages/$id'
+      path: '/messages/$id'
+      fullPath: '/messages/$id'
+      preLoaderRoute: typeof AuthenticatedMessagesIdRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/messages/': {
+      id: '/_authenticated/messages/'
+      path: '/messages'
+      fullPath: '/messages/'
+      preLoaderRoute: typeof AuthenticatedMessagesIndexRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -193,16 +213,18 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedIndexRouteRoute: typeof AuthenticatedIndexRouteRoute
   AuthenticatedArchiveRouteRoute: typeof AuthenticatedArchiveRouteRoute
   AuthenticatedContactsRouteRoute: typeof AuthenticatedContactsRouteRoute
-  AuthenticatedMessagesRouteRoute: typeof AuthenticatedMessagesRouteRoute
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRoute
+  AuthenticatedMessagesIndexRouteRoute: typeof AuthenticatedMessagesIndexRouteRoute
+  AuthenticatedMessagesIdRouteRoute: typeof AuthenticatedMessagesIdRouteRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedIndexRouteRoute: AuthenticatedIndexRouteRoute,
   AuthenticatedArchiveRouteRoute: AuthenticatedArchiveRouteRoute,
   AuthenticatedContactsRouteRoute: AuthenticatedContactsRouteRoute,
-  AuthenticatedMessagesRouteRoute: AuthenticatedMessagesRouteRoute,
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRoute,
+  AuthenticatedMessagesIndexRouteRoute: AuthenticatedMessagesIndexRouteRoute,
+  AuthenticatedMessagesIdRouteRoute: AuthenticatedMessagesIdRouteRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

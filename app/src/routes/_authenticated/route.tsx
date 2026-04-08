@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_authenticated")({
         {/* Backdrop — only on mobile when panel is open */}
         {isNavbarOpen && (
           <div
-            className="absolute inset-0 z-10 bg-black/40 md:hidden"
+            className="absolute inset-0 z-20 bg-black/40 md:hidden"
             onClick={() => setIsNavbarOpen(false)}
             aria-hidden="true"
           />
