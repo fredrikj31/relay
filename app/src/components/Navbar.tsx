@@ -105,7 +105,7 @@ export const Navbar = ({ isNavbarOpen }: { isNavbarOpen: boolean }) => {
   return (
     <aside
       className={cn(
-        "h-screen w-16 shrink-0 flex-col items-center border-r border-border bg-sidebar py-3 flex absolute inset-y-0 left-0 z-20 transition-transform duration-300 ease-in-out",
+        "h-screen w-16 shrink-0 flex-col items-center border-r border-border bg-sidebar py-3 flex absolute inset-y-0 left-0 z-30 transition-transform duration-300 ease-in-out",
         "md:relative md:translate-x-0",
         isNavbarOpen ? "translate-x-0" : "-translate-x-full",
       )}
