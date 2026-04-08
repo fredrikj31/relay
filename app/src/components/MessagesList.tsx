@@ -2,7 +2,7 @@ import { useState } from "react";
 import { cn } from "@shadcn-ui/lib/utils";
 import { Search, Edit, Users, PanelLeftOpen } from "lucide-react";
 import { Conversation, conversations } from "../data/messages";
-import { useNavbar } from "../../../providers/navbar";
+import { useNavbar } from "../providers/navbar";
 
 export function MessageList() {
   const { setIsNavbarOpen } = useNavbar();
