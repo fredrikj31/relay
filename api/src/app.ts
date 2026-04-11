@@ -1,4 +1,5 @@
 import Fastify, { FastifyInstance } from "fastify";
+import fastifyCors from "@fastify/cors";
 import fastifyCookie from "@fastify/cookie";
 import { routes } from "./routes";
 import { config } from "./config";
@@ -9,6 +10,12 @@ const app: FastifyInstance = Fastify({
 });
 
 app
+  .register(fastifyCors, {
+    origin: config.website.baseUrl,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    maxAge: 86400,
+    credentials: true,
+  })
   .register(fastifyCookie, {
     parseOptions: {
       path: "/",
