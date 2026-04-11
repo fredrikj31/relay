@@ -7,6 +7,7 @@ dotEnvConfig({ path: "../.env" });
 const envVarsSchema = z.object({
   API_HOST: z.string().default("0.0.0.0"),
   API_PORT: z.coerce.number().default(3000),
+  WEBSITE_BASE_URL: z.string(),
   DATABASE_HOST: z.string(),
   DATABASE_PORT: z.string(),
   DATABASE_USER: z.string(),
@@ -26,6 +27,9 @@ export const config = {
   api: {
     host: envVars.data.API_HOST,
     port: envVars.data.API_PORT,
+  },
+  website: {
+    baseUrl: envVars.data.WEBSITE_BASE_URL,
   },
   database: {
     host: envVars.data.DATABASE_HOST,

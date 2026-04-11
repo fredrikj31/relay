@@ -48,6 +48,7 @@ services:
     profiles:
       - prod
     environment:
+      WEBSITE_BASE_URL: ${WEBSITE_BASE_URL}
       DATABASE_HOST: relay-database
       DATABASE_PORT: 5432 # Must be set to "5432", because the backend and database shares network
       DATABASE_NAME: relay
