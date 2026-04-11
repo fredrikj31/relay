@@ -23,7 +23,6 @@ import {
   Users,
 } from "lucide-react";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
-import { FileRoutesByTo } from "src/routeTree.gen";
 
 const NAV_ITEMS: {
   id: string;
@@ -31,7 +30,7 @@ const NAV_ITEMS: {
     Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
   >;
   label: string;
-  link: keyof FileRoutesByTo;
+  link: string;
   position: "top" | "bottom";
 }[] = [
   { id: "home", icon: House, label: "Home", link: "/", position: "top" },
