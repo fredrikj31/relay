@@ -3,6 +3,7 @@ import { NavbarProvider } from "./providers/navbar";
 import { SignupRoute } from "./routes/signup/route";
 import { LoginRoute } from "./routes/login/route";
 import { AuthenticatedRouteLayout } from "./routes/_authenticated/route";
+import { ContactsRoute } from "./routes/_authenticated.contacts/route";
 import { ArchiveRoute } from "./routes/_authenticated.archive/route";
 
 export const App = () => {
@@ -13,6 +14,7 @@ export const App = () => {
           <Route path="/signup" element={<SignupRoute />} />
           <Route path="/login" element={<LoginRoute />} />
           <Route path="/" element={<AuthenticatedRouteLayout />}>
+            <Route path="/contacts" element={<ContactsRoute />} />
             <Route path="/archive" element={<ArchiveRoute />} />
           </Route>
         </Routes>
