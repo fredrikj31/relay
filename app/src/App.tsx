@@ -8,6 +8,7 @@ import { ArchiveRoute } from "./routes/_authenticated.archive/route";
 import { SettingsRoute } from "./routes/_authenticated.settings/route";
 import { IndexRoute } from "./routes/_authenticated.index/route";
 import { MessagesIndexRoute } from "./routes/_authenticated.messages.index/route";
+import { MessagesContentRoute } from "./routes/_authenticated.messages.$id/route";
 
 export const App = () => {
   return (
@@ -20,6 +21,7 @@ export const App = () => {
             <Route index element={<IndexRoute />} />
             <Route path="messages">
               <Route index element={<MessagesIndexRoute />} />
+              <Route path=":id" element={<MessagesContentRoute />} />
             </Route>
             <Route path="/contacts" element={<ContactsRoute />} />
             <Route path="/archive" element={<ArchiveRoute />} />
