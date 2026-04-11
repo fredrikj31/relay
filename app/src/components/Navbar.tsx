@@ -13,7 +13,7 @@ import {
   PopoverTrigger,
 } from "@shadcn-ui/components/ui/popover";
 import { cn } from "@shadcn-ui/lib/utils";
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link, useLocation } from "react-router";
 import {
   Archive,
   House,

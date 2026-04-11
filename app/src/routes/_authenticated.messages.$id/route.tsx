@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { MessageBubble } from "./components/-MessageBubble";
 import { EllipsisVertical, PanelLeftOpen } from "lucide-react";
 import { useNavbar } from "../../providers/navbar";
@@ -10,11 +9,7 @@ import {
 } from "@shadcn-ui/components/ui/avatar";
 import { MessageList } from "../../components/MessagesList";
 
-export const Route = createFileRoute("/_authenticated/messages/$id")({
-  component: RouteComponent,
-});
-
-function RouteComponent() {
+export const MessagesContentRoute = () => {
   const { setIsNavbarOpen } = useNavbar();
 
   return (
@@ -79,4 +74,4 @@ function RouteComponent() {
       </div>
     </div>
   );
-}
+};
