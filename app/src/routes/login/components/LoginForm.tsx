@@ -14,7 +14,7 @@ import {
   FieldLabel,
 } from "@shadcn-ui/components/ui/field";
 import { Input } from "@shadcn-ui/components/ui/input";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Link } from "react-router";
 import {
   InputGroup,
@@ -22,12 +22,30 @@ import {
   InputGroupInput,
 } from "@shadcn-ui/components/ui/input-group";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useAuth } from "../../../providers/auth";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const [isShowingPassword, setIsShowingPassword] = useState<boolean>(false);
+
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
+
+  const { login } = useAuth();
+
+  const loginHandler = () => {
+    const email = emailInputRef.current?.value;
+    const password = passwordInputRef.current?.value;
+
+    if (!email || !password) return;
+
+    login({
+      email,
+      password,
+    });
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -44,6 +62,7 @@ export function LoginForm({
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
+                  ref={emailInputRef}
                   id="email"
                   type="email"
                   placeholder="johndoe@mail.com"
@@ -62,6 +81,7 @@ export function LoginForm({
                 </div>
                 <InputGroup>
                   <InputGroupInput
+                    ref={passwordInputRef}
                     id="password"
                     type={isShowingPassword ? "text" : "password"}
                     required
@@ -84,7 +104,7 @@ export function LoginForm({
                 </InputGroup>
               </Field>
               <Field>
-                <Button type="submit">Login</Button>
+                <Button onClick={loginHandler}>Login</Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account? <Link to="/signup">Sign up</Link>
                 </FieldDescription>
