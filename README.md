@@ -6,7 +6,7 @@ Create a `.env` file in the project root file. The content of the file should be
 
 ```shell
 # API Environment Variables
-WEBSITE_BASE_URL=http://127.0.0.1:3000
+WEBSITE_BASE_URL=http://127.0.0.1:5173
 API_HOST=0.0.0.0 # Optional
 API_PORT=3000 # Optional
 DATABASE_HOST=localhost
@@ -16,4 +16,7 @@ DATABASE_PASSWORD=password
 DATABASE_NAME=relay
 TOKEN_PASSWORD_SALT= # Random generated string
 TOKEN_JWT_PRIVATE_KEY= # Random generated string
+
+# APP Environment Variables
+VITE_API_BASE_URL=http://127.0.0.1:3000/api
 ```

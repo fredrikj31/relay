@@ -9,26 +9,36 @@ import { SettingsRoute } from "./routes/_authenticated.settings/route";
 import { IndexRoute } from "./routes/_authenticated.index/route";
 import { MessagesIndexRoute } from "./routes/_authenticated.messages.index/route";
 import { MessagesContentRoute } from "./routes/_authenticated.messages.$id/route";
+import { AuthProvider } from "./providers/auth";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "@shadcn-ui/components/ui/sonner";
+
+const queryClient = new QueryClient();
 
 export const App = () => {
   return (
     <BrowserRouter>
-      <NavbarProvider>
-        <Routes>
-          <Route path="/signup" element={<SignupRoute />} />
-          <Route path="/login" element={<LoginRoute />} />
-          <Route path="/" element={<AuthenticatedRouteLayout />}>
-            <Route index element={<IndexRoute />} />
-            <Route path="messages">
-              <Route index element={<MessagesIndexRoute />} />
-              <Route path=":id" element={<MessagesContentRoute />} />
-            </Route>
-            <Route path="/contacts" element={<ContactsRoute />} />
-            <Route path="/archive" element={<ArchiveRoute />} />
-            <Route path="/settings" element={<SettingsRoute />} />
-          </Route>
-        </Routes>
-      </NavbarProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <NavbarProvider>
+            <Routes>
+              <Route path="/signup" element={<SignupRoute />} />
+              <Route path="/login" element={<LoginRoute />} />
+              <Route path="/" element={<AuthenticatedRouteLayout />}>
+                <Route index element={<IndexRoute />} />
+                <Route path="messages">
+                  <Route index element={<MessagesIndexRoute />} />
+                  <Route path=":id" element={<MessagesContentRoute />} />
+                </Route>
+                <Route path="/contacts" element={<ContactsRoute />} />
+                <Route path="/archive" element={<ArchiveRoute />} />
+                <Route path="/settings" element={<SettingsRoute />} />
+              </Route>
+            </Routes>
+            <Toaster />
+          </NavbarProvider>
+        </AuthProvider>
+      </QueryClientProvider>
     </BrowserRouter>
   );
 };
