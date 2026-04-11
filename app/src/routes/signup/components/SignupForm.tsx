@@ -14,7 +14,7 @@ import {
   FieldLabel,
 } from "@shadcn-ui/components/ui/field";
 import { Input } from "@shadcn-ui/components/ui/input";
-import { ComponentProps, useState } from "react";
+import { ComponentProps, useRef, useState } from "react";
 import { Link } from "react-router";
 import {
   InputGroup,
@@ -22,9 +22,35 @@ import {
   InputGroupInput,
 } from "@shadcn-ui/components/ui/input-group";
 import { AtSign, EyeIcon, EyeOffIcon } from "lucide-react";
+import { useAuth } from "../../../providers/auth";
 
 export function SignupForm({ className, ...props }: ComponentProps<"div">) {
   const [isShowingPassword, setIsShowingPassword] = useState<boolean>(false);
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const usernameInputRef = useRef<HTMLInputElement>(null);
+  const firstNameInputRef = useRef<HTMLInputElement>(null);
+  const lastNameInputRef = useRef<HTMLInputElement>(null);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
+
+  const { signup } = useAuth();
+
+  const signupHandler = () => {
+    const email = emailInputRef.current?.value;
+    const username = usernameInputRef.current?.value;
+    const firstName = firstNameInputRef.current?.value;
+    const lastName = lastNameInputRef.current?.value;
+    const password = passwordInputRef.current?.value;
+
+    if (!email || !username || !firstName || !lastName || !password) return;
+
+    signup({
+      email,
+      username,
+      firstName,
+      lastName,
+      password,
+    });
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -41,6 +67,7 @@ export function SignupForm({ className, ...props }: ComponentProps<"div">) {
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
+                  ref={emailInputRef}
                   id="email"
                   type="email"
                   placeholder="johndoe@mail.com"
@@ -51,6 +78,7 @@ export function SignupForm({ className, ...props }: ComponentProps<"div">) {
                 <FieldLabel htmlFor="username">Username</FieldLabel>
                 <InputGroup>
                   <InputGroupInput
+                    ref={usernameInputRef}
                     id="username"
                     type="username"
                     placeholder="JohnDoe"
@@ -65,6 +93,7 @@ export function SignupForm({ className, ...props }: ComponentProps<"div">) {
                 <Field>
                   <FieldLabel htmlFor="firstName">First Name</FieldLabel>
                   <Input
+                    ref={firstNameInputRef}
                     id="firstName"
                     type="text"
                     required
@@ -73,13 +102,20 @@ export function SignupForm({ className, ...props }: ComponentProps<"div">) {
                 </Field>
                 <Field>
                   <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
-                  <Input id="lastName" type="text" required placeholder="Doe" />
+                  <Input
+                    ref={lastNameInputRef}
+                    id="lastName"
+                    type="text"
+                    required
+                    placeholder="Doe"
+                  />
                 </Field>
               </Field>
               <Field>
                 <FieldLabel htmlFor="password">Password</FieldLabel>
                 <InputGroup>
                   <InputGroupInput
+                    ref={passwordInputRef}
                     id="password"
                     type={isShowingPassword ? "text" : "password"}
                     required
@@ -102,7 +138,7 @@ export function SignupForm({ className, ...props }: ComponentProps<"div">) {
                 </InputGroup>
               </Field>
               <Field>
-                <Button type="submit">Create Account</Button>
+                <Button onClick={signupHandler}>Create Account</Button>
                 <FieldDescription className="text-center">
                   Already have an account? <Link to="/login">Log in</Link>
                 </FieldDescription>
