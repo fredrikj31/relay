@@ -1,10 +1,13 @@
-import { BrowserRouter } from "react-router";
+import { BrowserRouter, Route, Routes } from "react-router";
 import { NavbarProvider } from "./providers/navbar";
+import { SignupRoute } from "./routes/signup/route";
 export const App = () => {
   return (
     <BrowserRouter>
       <NavbarProvider>
-        <h1>Hej med dig</h1>
+        <Routes>
+          <Route path="/signup" element={<SignupRoute />} />
+        </Routes>
       </NavbarProvider>
     </BrowserRouter>
   );

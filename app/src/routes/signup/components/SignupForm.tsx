@@ -15,7 +15,7 @@ import {
 } from "@shadcn-ui/components/ui/field";
 import { Input } from "@shadcn-ui/components/ui/input";
 import { ComponentProps, useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link } from "react-router";
 import {
   InputGroup,
   InputGroupAddon,
