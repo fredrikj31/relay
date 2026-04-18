@@ -5,6 +5,7 @@ import z from "zod";
 import { ContactRequestSchema } from "../../types/contact";
 import { createContactRequestHandler } from "./handlers/createContactRequest";
 import { deleteContactRequestHandler } from "./handlers/deleteContactRequest";
+import { acceptOrDeclineContactRequest } from "./handlers/acceptOrDeclineContactRequest";
 
 export const contactRoutes: FastifyPluginAsync = async (instance) => {
   const app = instance.withTypeProvider<ZodTypeProvider>();
@@ -72,6 +73,45 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
         database,
         accountId,
         requestId,
+      });
+
+      return res.status(200).send(contactRequest);
+    },
+  );
+
+  app.put(
+    "/requests/:requestId",
+    {
+      onRequest: validateJwt(),
+      schema: {
+        summary: "Accepts or Declines a contact request",
+        description: "Accepts or Declines a contact requests to another user.",
+        tags: ["contacts"],
+        security: [
+          {
+            jwt: [""],
+          },
+        ],
+        params: z.object({
+          requestId: z.uuid(),
+        }),
+        body: z.object({
+          status: z.enum(["accepted", "declined"]),
+        }),
+        response: {
+          "200": ContactRequestSchema,
+        },
+      },
+    },
+    async (req, res) => {
+      const accountId = req.account?.id;
+      const { requestId } = req.params;
+      const { status } = req.body;
+      const contactRequest = await acceptOrDeclineContactRequest({
+        database,
+        accountId,
+        requestId,
+        status,
       });
 
       return res.status(200).send(contactRequest);
