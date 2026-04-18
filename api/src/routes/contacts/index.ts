@@ -3,8 +3,8 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { validateJwt } from "../../hooks/validateJwt";
 import z from "zod";
 import { ContactRequestSchema } from "../../types/contact";
-import { BadRequestError, UnauthorizedError } from "../../errors/client";
-import { createContactRequest } from "../../services/database/queries/contact/createContactRequest";
+import { createContactRequestHandler } from "./handlers/createContactRequest";
+import { deleteContactRequestHandler } from "./handlers/deleteContactRequest";
 
 export const contactRoutes: FastifyPluginAsync = async (instance) => {
   const app = instance.withTypeProvider<ZodTypeProvider>();
@@ -33,25 +33,45 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
     },
     async (req, res) => {
       const accountId = req.account?.id;
-      if (!accountId) {
-        throw new UnauthorizedError({
-          code: "account-id-not-found-in-request",
-          message: "A account id wasn't found in the request object",
-        });
-      }
-
       const { contactId } = req.body;
-
-      if (accountId === contactId) {
-        throw new BadRequestError({
-          code: "contact-request-contact-id-matches-account-id",
-          message: "Contact id matches the account id from the access token",
-        });
-      }
-
-      const contactRequest = await createContactRequest(database, {
+      const contactRequest = await createContactRequestHandler({
+        database,
         accountId,
         contactId,
+      });
+
+      return res.status(200).send(contactRequest);
+    },
+  );
+
+  app.delete(
+    "/requests/:requestId",
+    {
+      onRequest: validateJwt(),
+      schema: {
+        summary: "Deletes a contact request",
+        description: "Deletes a contact requests to another user.",
+        tags: ["contacts"],
+        security: [
+          {
+            jwt: [""],
+          },
+        ],
+        params: z.object({
+          requestId: z.uuid(),
+        }),
+        response: {
+          "200": ContactRequestSchema,
+        },
+      },
+    },
+    async (req, res) => {
+      const accountId = req.account?.id;
+      const { requestId } = req.params;
+      const contactRequest = await deleteContactRequestHandler({
+        database,
+        accountId,
+        requestId,
       });
 
       return res.status(200).send(contactRequest);

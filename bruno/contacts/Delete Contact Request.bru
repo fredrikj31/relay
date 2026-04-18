@@ -1,0 +1,15 @@
+meta {
+  name: Delete Contact Request
+  type: http
+  seq: 2
+}
+
+delete {
+  url: {{host}}/contacts/requests/:requestId
+  body: none
+  auth: inherit
+}
+
+params:path {
+  requestId: 
+}
