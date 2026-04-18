@@ -1,0 +1,17 @@
+meta {
+  name: Create Contact Request
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{host}}/contacts/requests
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "contactId": ""
+  }
+}
