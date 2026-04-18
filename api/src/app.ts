@@ -1,6 +1,8 @@
 import Fastify, { FastifyInstance } from "fastify";
 import fastifyCors from "@fastify/cors";
 import fastifyCookie from "@fastify/cookie";
+import fastifySwagger from "@fastify/swagger";
+import { swaggerConfig } from "./plugins/swagger";
 import { routes } from "./routes";
 import { config } from "./config";
 import { databasePlugin } from "./services/database/client";
@@ -10,6 +12,19 @@ const app: FastifyInstance = Fastify({
 });
 
 app
+  .register(fastifySwagger, swaggerConfig)
+  .register(import("@scalar/fastify-api-reference"), {
+    routePrefix: "/docs",
+    configuration: {
+      mcp: {
+        disabled: true,
+      },
+      agent: {
+        disabled: true,
+      },
+      hideClientButton: true,
+    },
+  })
   .register(fastifyCors, {
     origin: config.website.baseUrl,
     methods: ["GET", "POST", "PUT", "DELETE"],
