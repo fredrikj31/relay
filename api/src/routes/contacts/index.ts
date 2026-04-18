@@ -5,6 +5,7 @@ import z from "zod";
 import { ContactRequestSchema } from "../../types/contact";
 import { BadRequestError, UnauthorizedError } from "../../errors/client";
 import { createContactRequest } from "../../services/database/queries/contact/createContactRequest";
+import { deleteContactRequestHandler } from "./handlers/deleteContactRequest";
 
 export const contactRoutes: FastifyPluginAsync = async (instance) => {
   const app = instance.withTypeProvider<ZodTypeProvider>();
@@ -52,6 +53,40 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
       const contactRequest = await createContactRequest(database, {
         accountId,
         contactId,
+      });
+
+      return res.status(200).send(contactRequest);
+    },
+  );
+
+  app.delete(
+    "/requests/:requestId",
+    {
+      onRequest: validateJwt(),
+      schema: {
+        summary: "Deletes a contact request",
+        description: "Deletes a contact requests to another user.",
+        tags: ["contacts"],
+        security: [
+          {
+            jwt: [""],
+          },
+        ],
+        params: z.object({
+          requestId: z.uuid(),
+        }),
+        response: {
+          "200": ContactRequestSchema,
+        },
+      },
+    },
+    async (req, res) => {
+      const accountId = req.account?.id;
+      const { requestId } = req.params;
+      const contactRequest = await deleteContactRequestHandler({
+        database,
+        accountId,
+        requestId,
       });
 
       return res.status(200).send(contactRequest);
