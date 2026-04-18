@@ -17,3 +17,13 @@ export const ContactRequestSchema = z.object({
   status: ContactRequestStatusSchema,
 });
 export type ContactRequest = z.infer<typeof ContactRequestSchema>;
+
+export const ContactSchema = z.object({
+  id: z.uuid(),
+  createdAt: z.iso.datetime(),
+  updatedAt: z.iso.datetime().nullable(),
+  deletedAt: z.iso.datetime().nullable(),
+  accountId: z.uuid(),
+  contactId: z.uuid(),
+});
+export type Contact = z.infer<typeof ContactSchema>;
