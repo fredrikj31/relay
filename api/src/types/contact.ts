@@ -5,7 +5,7 @@ export const ContactRequestStatusSchema = z.enum([
   "ACCEPTED",
   "DECLINED",
 ]);
-export type ContactRequestStats = z.infer<typeof ContactRequestStatusSchema>;
+export type ContactRequestStatus = z.infer<typeof ContactRequestStatusSchema>;
 
 export const ContactRequestSchema = z.object({
   id: z.uuid(),
