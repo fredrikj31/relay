@@ -1,0 +1,21 @@
+meta {
+  name: Accept Or Decline Contact Request
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{host}}/contacts/requests/:requestId
+  body: json
+  auth: inherit
+}
+
+params:path {
+  requestId: 
+}
+
+body:json {
+  {
+    "status": "accepted"
+  }
+}
