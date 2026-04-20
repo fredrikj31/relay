@@ -18,7 +18,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - database-data:/var/lib/postgresql/data # locally bound ".docker" folder
+      - database-data:/var/lib/postgresql # store data from postgresql in the volume
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql # init database with SQL files from local "database" folder
     logging: *default-logging
 
@@ -37,7 +37,7 @@ services:
     networks:
       - relay-network
     volumes:
-      - database-data:/var/lib/postgresql/data # store data from postgresql in the volume
+      - database-data:/var/lib/postgresql # store data from postgresql in the volume
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql # init database with SQL files from local "database" folder
     logging: *default-logging
 
