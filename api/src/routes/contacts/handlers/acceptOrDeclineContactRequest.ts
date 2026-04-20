@@ -2,6 +2,7 @@ import { CommonQueryMethods } from "slonik";
 import { ContactRequest } from "../../../types/contact";
 import { BadRequestError, UnauthorizedError } from "../../../errors/client";
 import { updateContactRequest } from "../../../services/database/queries/contact/updateContactRequest";
+import { createContact } from "../../../services/database/queries/contact/createContact";
 
 interface AcceptOrDeclineContactRequestHandlerOptions {
   database: CommonQueryMethods;
@@ -29,7 +30,15 @@ export const acceptOrDeclineContactRequest = async ({
         requestId,
         status: "ACCEPTED",
       });
-      // TODO: Add creation of contact relationship here.
+
+      await createContact(transaction, {
+        accountId: contactRequest.senderAccountId,
+        contactId: contactRequest.receiverAccountId,
+      });
+      await createContact(transaction, {
+        accountId: contactRequest.receiverAccountId,
+        contactId: contactRequest.senderAccountId,
+      });
 
       return contactRequest;
     });
@@ -43,7 +52,6 @@ export const acceptOrDeclineContactRequest = async ({
         requestId,
         status: "DECLINED",
       });
-      // TODO: Add creation of contact relationship here.
 
       return contactRequest;
     });
