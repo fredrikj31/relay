@@ -2,14 +2,57 @@ import { FastifyPluginAsync } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { validateJwt } from "../../hooks/validateJwt";
 import z from "zod";
-import { ContactRequestSchema } from "../../types/contact";
+import { ContactRequestSchema, ContactSchema } from "../../types/contact";
 import { createContactRequestHandler } from "./handlers/createContactRequest";
 import { deleteContactRequestHandler } from "./handlers/deleteContactRequest";
 import { acceptOrDeclineContactRequest } from "./handlers/acceptOrDeclineContactRequest";
+import { listAccountContactsHandler } from "./handlers/listAccountContacts";
+import { AccountSchema } from "../../types/account";
 
 export const contactRoutes: FastifyPluginAsync = async (instance) => {
   const app = instance.withTypeProvider<ZodTypeProvider>();
   const database = instance.database;
+
+  app.get(
+    "/",
+    {
+      onRequest: validateJwt(),
+      schema: {
+        summary: "List account's contacts",
+        description:
+          "Lists account's contacts and their account profile with details about them.",
+        tags: ["contacts"],
+        security: [
+          {
+            jwt: [""],
+          },
+        ],
+        response: {
+          "200": ContactSchema.omit({ accountId: true, contactId: true })
+            .extend({
+              account: AccountSchema.pick({
+                id: true,
+                username: true,
+                firstName: true,
+                lastName: true,
+              }),
+            })
+            .array()
+            .describe(
+              "Returns a list of the account's contacts, and their account.",
+            ),
+        },
+      },
+    },
+    async (req, res) => {
+      const accountId = req.account?.id;
+      const contacts = await listAccountContactsHandler({
+        database,
+        accountId,
+      });
+      return res.send(contacts);
+    },
+  );
 
   app.post(
     "/requests",
