@@ -8,6 +8,7 @@ import { deleteContactRequestHandler } from "./handlers/deleteContactRequest";
 import { acceptOrDeclineContactRequest } from "./handlers/acceptOrDeclineContactRequest";
 import { listAccountContactsHandler } from "./handlers/listAccountContacts";
 import { AccountSchema } from "../../types/account";
+import { listSendContactRequestsHandler } from "./handlers/listSentContactRequests";
 
 export const contactRoutes: FastifyPluginAsync = async (instance) => {
   const app = instance.withTypeProvider<ZodTypeProvider>();
@@ -158,6 +159,44 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
       });
 
       return res.status(200).send(contactRequest);
+    },
+  );
+
+  app.get(
+    "/requests/sent",
+    {
+      onRequest: validateJwt(),
+      schema: {
+        summary: "List account's sent contact requests",
+        description: "Lists account's sent contact requests to other accounts.",
+        tags: ["contacts"],
+        security: [
+          {
+            jwt: [""],
+          },
+        ],
+        response: {
+          "200": ContactRequestSchema.omit({ senderAccountId: true })
+            .extend({
+              account: AccountSchema.pick({
+                id: true,
+                username: true,
+                firstName: true,
+                lastName: true,
+              }),
+            })
+            .array(),
+        },
+      },
+    },
+    async (req, res) => {
+      const accountId = req.account?.id;
+      const sentContactRequests = await listSendContactRequestsHandler({
+        database,
+        accountId,
+      });
+
+      return res.status(200).send(sentContactRequests);
     },
   );
 };

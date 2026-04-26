@@ -1,0 +1,11 @@
+meta {
+  name: List Sent Contact Requests
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{host}}/contacts/requests/sent
+  body: none
+  auth: inherit
+}
