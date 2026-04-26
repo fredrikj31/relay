@@ -7,22 +7,22 @@ import {
 } from "../../../../types/contact";
 import { Account, AccountSchema } from "../../../../types/account";
 
-interface ListSentContactRequestsOptions {
+interface ListReceivedContactRequestsOptions {
   accountId: string;
 }
-export const listSentContactRequests = async (
+export const listReceivedContactRequests = async (
   database: CommonQueryMethods,
-  { accountId }: ListSentContactRequestsOptions,
+  { accountId }: ListReceivedContactRequestsOptions,
 ): Promise<
   Readonly<
-    (Omit<ContactRequest, "senderAccountId"> & {
+    (Omit<ContactRequest, "receiverAccountId"> & {
       account: Pick<Account, "id" | "username" | "firstName" | "lastName">;
     })[]
   >
 > => {
   try {
     return await database.any(sql.type(
-      ContactRequestSchema.omit({ senderAccountId: true }).extend({
+      ContactRequestSchema.omit({ receiverAccountId: true }).extend({
         account: AccountSchema.pick({
           id: true,
           username: true,
@@ -33,7 +33,7 @@ export const listSentContactRequests = async (
     )`
       SELECT
         contact_request.id as id,
-        contact_request.receiver_account_id as receiver_account_id,
+        contact_request.sender_account_id as sender_account_id,
         contact_request.status as status,
         contact_request.created_at as created_at,
         contact_request.updated_at as updated_at,
@@ -46,21 +46,21 @@ export const listSentContactRequests = async (
         ) as account
       FROM
         contact_request
-        JOIN account ON contact_request.receiver_account_id = account.id
+        JOIN account ON contact_request.sender_account_id = account.id
       WHERE
-        contact_request.sender_account_id = ${accountId}
+        contact_request.receiver_account_id = ${accountId}
       AND
         contact_request.status = 'PENDING';
     `);
   } catch (error) {
     logger.error(
       error,
-      "Error while listing sent contact requests in database.",
+      "Error while listing received contact requests in database.",
     );
     throw new InternalServerError({
       code: "unknown-error-listing-sent-contact-requests",
       message:
-        "Unknown error when trying to list sent contact requests from database",
+        "Unknown error when trying to list received contact requests from database",
     });
   }
 };

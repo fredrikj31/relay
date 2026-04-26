@@ -8,7 +8,8 @@ import { deleteContactRequestHandler } from "./handlers/deleteContactRequest";
 import { acceptOrDeclineContactRequest } from "./handlers/acceptOrDeclineContactRequest";
 import { listAccountContactsHandler } from "./handlers/listAccountContacts";
 import { AccountSchema } from "../../types/account";
-import { listSendContactRequestsHandler } from "./handlers/listSentContactRequests";
+import { listSentContactRequestsHandler } from "./handlers/listSentContactRequests";
+import { listReceivedContactRequestsHandler } from "./handlers/listReceivedContactRequests";
 
 export const contactRoutes: FastifyPluginAsync = async (instance) => {
   const app = instance.withTypeProvider<ZodTypeProvider>();
@@ -191,12 +192,51 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
     },
     async (req, res) => {
       const accountId = req.account?.id;
-      const sentContactRequests = await listSendContactRequestsHandler({
+      const sentContactRequests = await listSentContactRequestsHandler({
         database,
         accountId,
       });
 
       return res.status(200).send(sentContactRequests);
+    },
+  );
+
+  app.get(
+    "/requests/received",
+    {
+      onRequest: validateJwt(),
+      schema: {
+        summary: "List account's received contact requests",
+        description:
+          "Lists account's received contact requests to other accounts.",
+        tags: ["contacts"],
+        security: [
+          {
+            jwt: [""],
+          },
+        ],
+        response: {
+          "200": ContactRequestSchema.omit({ receiverAccountId: true })
+            .extend({
+              account: AccountSchema.pick({
+                id: true,
+                username: true,
+                firstName: true,
+                lastName: true,
+              }),
+            })
+            .array(),
+        },
+      },
+    },
+    async (req, res) => {
+      const accountId = req.account?.id;
+      const receivedContactRequests = await listReceivedContactRequestsHandler({
+        database,
+        accountId,
+      });
+
+      return res.status(200).send(receivedContactRequests);
     },
   );
 };

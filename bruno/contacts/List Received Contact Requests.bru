@@ -1,0 +1,11 @@
+meta {
+  name: List Received Contact Requests
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{host}}/contacts/requests/received
+  body: none
+  auth: inherit
+}

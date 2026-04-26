@@ -1,18 +1,18 @@
 import { CommonQueryMethods } from "slonik";
 import { ContactRequest } from "../../../types/contact";
 import { Account } from "../../../types/account";
-import { listSentContactRequests } from "../../../services/database/queries/contact/listSentContactRequests";
+import { listReceivedContactRequests } from "../../../services/database/queries/contact/listReceivedContactRequests";
 import { UnauthorizedError } from "../../../errors/client";
 
-interface ListSentContactRequestsHandlerOptions {
+interface ListReceivedContactRequestsHandlerOptions {
   database: CommonQueryMethods;
   accountId: string | undefined;
 }
-export const listSentContactRequestsHandler = async ({
+export const listReceivedContactRequestsHandler = async ({
   database,
   accountId,
-}: ListSentContactRequestsHandlerOptions): Promise<
-  (Omit<ContactRequest, "senderAccountId"> & {
+}: ListReceivedContactRequestsHandlerOptions): Promise<
+  (Omit<ContactRequest, "receiverAccountId"> & {
     account: Pick<Account, "id" | "username" | "firstName" | "lastName">;
   })[]
 > => {
@@ -23,9 +23,9 @@ export const listSentContactRequestsHandler = async ({
     });
   }
 
-  const sentContactRequests = await listSentContactRequests(database, {
+  const receivedContactRequests = await listReceivedContactRequests(database, {
     accountId,
   });
 
-  return [...sentContactRequests];
+  return [...receivedContactRequests];
 };
