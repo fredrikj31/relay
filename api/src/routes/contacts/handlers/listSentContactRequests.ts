@@ -4,14 +4,14 @@ import { Account } from "../../../types/account";
 import { listSentContactRequests } from "../../../services/database/queries/contact/listSentContactRequests";
 import { UnauthorizedError } from "../../../errors/client";
 
-interface ListSendContactRequestsHandlerOptions {
+interface ListSentContactRequestsHandlerOptions {
   database: CommonQueryMethods;
   accountId: string | undefined;
 }
-export const listSendContactRequestsHandler = async ({
+export const listSentContactRequestsHandler = async ({
   database,
   accountId,
-}: ListSendContactRequestsHandlerOptions): Promise<
+}: ListSentContactRequestsHandlerOptions): Promise<
   (Omit<ContactRequest, "senderAccountId"> & {
     account: Pick<Account, "id" | "username" | "firstName" | "lastName">;
   })[]

@@ -8,7 +8,7 @@ import { deleteContactRequestHandler } from "./handlers/deleteContactRequest";
 import { acceptOrDeclineContactRequest } from "./handlers/acceptOrDeclineContactRequest";
 import { listAccountContactsHandler } from "./handlers/listAccountContacts";
 import { AccountSchema } from "../../types/account";
-import { listSendContactRequestsHandler } from "./handlers/listSentContactRequests";
+import { listSentContactRequestsHandler } from "./handlers/listSentContactRequests";
 
 export const contactRoutes: FastifyPluginAsync = async (instance) => {
   const app = instance.withTypeProvider<ZodTypeProvider>();
@@ -191,7 +191,7 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
     },
     async (req, res) => {
       const accountId = req.account?.id;
-      const sentContactRequests = await listSendContactRequestsHandler({
+      const sentContactRequests = await listSentContactRequestsHandler({
         database,
         accountId,
       });

@@ -7,12 +7,12 @@ import {
 } from "../../../../types/contact";
 import { Account, AccountSchema } from "../../../../types/account";
 
-interface ListSendContactRequestsOptions {
+interface ListSentContactRequestsOptions {
   accountId: string;
 }
 export const listSentContactRequests = async (
   database: CommonQueryMethods,
-  { accountId }: ListSendContactRequestsOptions,
+  { accountId }: ListSentContactRequestsOptions,
 ): Promise<
   Readonly<
     (Omit<ContactRequest, "senderAccountId"> & {
