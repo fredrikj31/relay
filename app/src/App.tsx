@@ -3,7 +3,7 @@ import { NavbarProvider } from "./providers/navbar";
 import { SignupRoute } from "./routes/signup/route";
 import { LoginRoute } from "./routes/login/route";
 import { AuthenticatedRouteLayout } from "./routes/_authenticated/route";
-import { ContactsRoute } from "./routes/_authenticated.contacts/route";
+import { ContactsIndexRoute } from "./routes/_authenticated.contacts.index/route";
 import { ArchiveRoute } from "./routes/_authenticated.archive/route";
 import { SettingsRoute } from "./routes/_authenticated.settings/route";
 import { IndexRoute } from "./routes/_authenticated.index/route";
@@ -12,6 +12,7 @@ import { MessagesContentRoute } from "./routes/_authenticated.messages.$id/route
 import { AuthProvider } from "./providers/auth";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@shadcn-ui/components/ui/sonner";
+import { ContactsContentRoute } from "./routes/_authenticated.contacts.$id/route";
 
 const queryClient = new QueryClient();
 
@@ -30,7 +31,10 @@ export const App = () => {
                   <Route index element={<MessagesIndexRoute />} />
                   <Route path=":id" element={<MessagesContentRoute />} />
                 </Route>
-                <Route path="/contacts" element={<ContactsRoute />} />
+                <Route path="contacts">
+                  <Route index element={<ContactsIndexRoute />} />
+                  <Route path=":id" element={<ContactsContentRoute />} />
+                </Route>
                 <Route path="/archive" element={<ArchiveRoute />} />
                 <Route path="/settings" element={<SettingsRoute />} />
               </Route>
