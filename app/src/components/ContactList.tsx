@@ -33,6 +33,7 @@ import {
 } from "@shadcn-ui/components/ui/tabs";
 import { Badge } from "@shadcn-ui/components/ui/badge";
 import { useListSentContactRequests } from "../api/contacts/listSentContactRequests/useListSentContactRequests";
+import { useListReceivedContactRequests } from "../api/contacts/listReceivedContactRequests/useListReceivedContactRequests";
 
 export function ContactList() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,6 +42,7 @@ export function ContactList() {
   const { setIsNavbarOpen } = useNavbar();
   const { data: contacts } = useListContacts();
   const { data: sentContactRequests } = useListSentContactRequests();
+  const { data: receivedContactRequests } = useListReceivedContactRequests();
 
   const filteredContacts = useMemo(() => {
     if (!contacts) return [];
@@ -73,7 +75,7 @@ export function ContactList() {
             All Contacts
           </TabsTrigger>
           <TabsTrigger className="hover:cursor-pointer" value="requests">
-            Requests <Badge>3</Badge>
+            Requests <Badge>{receivedContactRequests?.length ?? 0}</Badge>
           </TabsTrigger>
         </TabsList>
         <TabsContent value="contacts">
@@ -135,38 +137,47 @@ export function ContactList() {
           className="flex flex-col gap-2 min-h-full"
         >
           <span className="text-neutral-500 text-xs uppercase font-semibold">
-            Received - 3
+            Received - {receivedContactRequests?.length ?? 0}
           </span>
 
           <ul role="list">
-            <li className="flex w-full flex-col gap-2">
-              <div className="flex flex-row items-center gap-2">
-                {/* Avatar */}
-                <Avatar className="size-11">
-                  <AvatarImage
-                    src="https://github.com/shadcn.png"
-                    alt="@shadcn"
-                  />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium text-foreground">
-                    Jane Doe
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    @JaneDoe
-                  </span>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-1 justify-end w-full">
-                <Button className="hover:cursor-pointer" variant="outline">
-                  <XIcon /> Decline
-                </Button>
-                <Button className="hover:cursor-pointer" variant="default">
-                  <UserCheck /> Accept
-                </Button>
-              </div>
-            </li>
+            {(receivedContactRequests ?? []).map((receivedContactRequest) => {
+              const { account } = receivedContactRequest;
+
+              return (
+                <li
+                  key={receivedContactRequest.id}
+                  className="flex w-full flex-col gap-2"
+                >
+                  <div className="flex flex-row items-center gap-2">
+                    {/* Avatar */}
+                    <Avatar className="size-11">
+                      <AvatarImage
+                        src="https://github.com/shadcn.png"
+                        alt="@shadcn"
+                      />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-foreground">
+                        {account.firstName} {account.lastName}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        @{account.username}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1 justify-end w-full">
+                    <Button className="hover:cursor-pointer" variant="outline">
+                      <XIcon /> Decline
+                    </Button>
+                    <Button className="hover:cursor-pointer" variant="default">
+                      <UserCheck /> Accept
+                    </Button>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
 
           <span className="text-neutral-500 text-xs uppercase font-semibold">
