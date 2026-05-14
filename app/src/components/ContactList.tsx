@@ -32,6 +32,7 @@ import {
   TabsTrigger,
 } from "@shadcn-ui/components/ui/tabs";
 import { Badge } from "@shadcn-ui/components/ui/badge";
+import { useListSentContactRequests } from "../api/contacts/listSentContactRequests/useListSentContactRequests";
 
 export function ContactList() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -39,6 +40,7 @@ export function ContactList() {
 
   const { setIsNavbarOpen } = useNavbar();
   const { data: contacts } = useListContacts();
+  const { data: sentContactRequests } = useListSentContactRequests();
 
   const filteredContacts = useMemo(() => {
     if (!contacts) return [];
@@ -168,38 +170,44 @@ export function ContactList() {
           </ul>
 
           <span className="text-neutral-500 text-xs uppercase font-semibold">
-            Sent - 3
+            Sent - {sentContactRequests?.length ?? 0}
           </span>
 
           <ul role="list" className="flex flex-col gap-4">
-            {new Array(2).fill(null).map((_, index) => (
-              <li key={index} className="flex w-full flex-col gap-2">
-                <div className="flex flex-row items-center gap-2">
-                  {/* Avatar */}
-                  <Avatar className="size-11">
-                    <AvatarImage
-                      src="https://github.com/shadcn.png"
-                      alt="@shadcn"
-                    />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium text-foreground">
-                      Jane Doe
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      @JaneDoe
-                    </span>
-                  </div>
-                </div>
-                <Button
-                  className="hover:cursor-pointer w-full"
-                  variant="destructive"
+            {(sentContactRequests ?? []).map((sentContactRequest) => {
+              const { account } = sentContactRequest;
+              return (
+                <li
+                  key={sentContactRequest.id}
+                  className="flex w-full flex-col gap-2"
                 >
-                  <UserMinus /> Cancel
-                </Button>
-              </li>
-            ))}
+                  <div className="flex flex-row items-center gap-2">
+                    {/* Avatar */}
+                    <Avatar className="size-11">
+                      <AvatarImage
+                        src="https://github.com/shadcn.png"
+                        alt="@shadcn"
+                      />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-foreground">
+                        {account.firstName} {account.lastName}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        @{account.username}
+                      </span>
+                    </div>
+                  </div>
+                  <Button
+                    className="hover:cursor-pointer w-full"
+                    variant="destructive"
+                  >
+                    <UserMinus /> Cancel
+                  </Button>
+                </li>
+              );
+            })}
           </ul>
         </TabsContent>
       </Tabs>
