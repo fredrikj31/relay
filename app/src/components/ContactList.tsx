@@ -34,15 +34,21 @@ import {
 import { Badge } from "@shadcn-ui/components/ui/badge";
 import { useListSentContactRequests } from "../api/contacts/listSentContactRequests/useListSentContactRequests";
 import { useListReceivedContactRequests } from "../api/contacts/listReceivedContactRequests/useListReceivedContactRequests";
+import { useSendContactRequest } from "../api/contacts/sendContactRequest/useSendContactRequest";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function ContactList() {
   const [searchQuery, setSearchQuery] = useState("");
   const addContactInputRef = useRef<HTMLInputElement>(null);
 
+  const queryClient = useQueryClient();
   const { setIsNavbarOpen } = useNavbar();
   const { data: contacts } = useListContacts();
   const { data: sentContactRequests } = useListSentContactRequests();
   const { data: receivedContactRequests } = useListReceivedContactRequests();
+  const { mutate: sendContactRequest } = useSendContactRequest();
 
   const filteredContacts = useMemo(() => {
     if (!contacts) return [];
@@ -53,6 +59,43 @@ export function ContactList() {
         .includes(searchQuery.toLowerCase()),
     );
   }, [contacts]);
+
+  const sendContactRequestHandler = () => {
+    if (!addContactInputRef.current) return;
+    const username = addContactInputRef.current.value.trim();
+
+    if (username.length === 0 || username === "") {
+      toast.error("You'll need to provide a username!", {
+        position: "bottom-right",
+      });
+      return;
+    }
+
+    sendContactRequest(username, {
+      onSuccess: () => {
+        toast.success(`Successfully sent request to ${username}!`, {
+          position: "bottom-right",
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["contacts", "requests", "sent"],
+        });
+        if (addContactInputRef.current) {
+          addContactInputRef.current.value = "";
+        }
+      },
+      onError: (error) => {
+        if (error instanceof AxiosError && error.status === 404) {
+          toast.warning(`User: "${username}" was not found!`, {
+            position: "bottom-right",
+          });
+        } else {
+          toast.error("Unknown error occurred while trying to send request.", {
+            position: "bottom-right",
+          });
+        }
+      },
+    });
+  };
 
   return (
     <aside className="flex h-full w-full md:w-80 flex-col border-r border-border bg-sidebar shrink-0">
