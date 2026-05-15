@@ -70,7 +70,7 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
           },
         ],
         body: z.object({
-          contactId: z.uuid(),
+          username: z.string(),
         }),
         response: {
           "200": ContactRequestSchema,
@@ -79,11 +79,11 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
     },
     async (req, res) => {
       const accountId = req.account?.id;
-      const { contactId } = req.body;
+      const { username } = req.body;
       const contactRequest = await createContactRequestHandler({
         database,
         accountId,
-        contactId,
+        username,
       });
 
       return res.status(200).send(contactRequest);
