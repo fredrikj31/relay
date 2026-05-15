@@ -34,15 +34,21 @@ import {
 import { Badge } from "@shadcn-ui/components/ui/badge";
 import { useListSentContactRequests } from "../api/contacts/listSentContactRequests/useListSentContactRequests";
 import { useListReceivedContactRequests } from "../api/contacts/listReceivedContactRequests/useListReceivedContactRequests";
+import { useSendContactRequest } from "../api/contacts/sendContactRequest/useSendContactRequest";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function ContactList() {
   const [searchQuery, setSearchQuery] = useState("");
   const addContactInputRef = useRef<HTMLInputElement>(null);
 
+  const queryClient = useQueryClient();
   const { setIsNavbarOpen } = useNavbar();
   const { data: contacts } = useListContacts();
   const { data: sentContactRequests } = useListSentContactRequests();
   const { data: receivedContactRequests } = useListReceivedContactRequests();
+  const { mutate: sendContactRequest } = useSendContactRequest();
 
   const filteredContacts = useMemo(() => {
     if (!contacts) return [];
@@ -53,6 +59,43 @@ export function ContactList() {
         .includes(searchQuery.toLowerCase()),
     );
   }, [contacts]);
+
+  const sendContactRequestHandler = () => {
+    if (!addContactInputRef.current) return;
+    const username = addContactInputRef.current.value.trim();
+
+    if (username.length === 0 || username === "") {
+      toast.error("You'll need to provide a username!", {
+        position: "bottom-right",
+      });
+      return;
+    }
+
+    sendContactRequest(username, {
+      onSuccess: () => {
+        toast.success(`Successfully sent request to ${username}!`, {
+          position: "bottom-right",
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["contacts", "requests", "sent"],
+        });
+        if (addContactInputRef.current) {
+          addContactInputRef.current.value = "";
+        }
+      },
+      onError: (error) => {
+        if (error instanceof AxiosError && error.status === 404) {
+          toast.warning(`User: "${username}" was not found!`, {
+            position: "bottom-right",
+          });
+        } else {
+          toast.error("Unknown error occurred while trying to send request.", {
+            position: "bottom-right",
+          });
+        }
+      },
+    });
+  };
 
   return (
     <aside className="flex h-full w-full md:w-80 flex-col border-r border-border bg-sidebar shrink-0">
@@ -80,7 +123,7 @@ export function ContactList() {
         </TabsList>
         <TabsContent value="contacts">
           {/* Search */}
-          <div className="pb-3">
+          <div className="py-3 border border-y border-border border-x-0">
             <div className="relative">
               <Search
                 size={14}
@@ -93,28 +136,6 @@ export function ContactList() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full rounded-lg bg-muted pl-9 pr-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring transition"
               />
-            </div>
-          </div>
-
-          {/* Add Contact */}
-          <div className="py-3 border border-y border-border border-x-0">
-            <span className="text-neutral-500 text-xs uppercase font-semibold">
-              Add by handle
-            </span>
-            <div className="flex flex-row gap-2 items-center">
-              <InputGroup>
-                <InputGroupInput
-                  ref={addContactInputRef}
-                  type="text"
-                  placeholder="JohnDoe"
-                />
-                <InputGroupAddon align="inline-start">
-                  <AtSignIcon className="text-muted-foreground" />
-                </InputGroupAddon>
-              </InputGroup>
-              <Button>
-                <UserPlus />
-              </Button>
             </div>
           </div>
 
@@ -136,6 +157,28 @@ export function ContactList() {
           value="requests"
           className="flex flex-col gap-2 min-h-full"
         >
+          {/* Add Contact */}
+          <div className="py-3 border border-y border-border border-x-0">
+            <span className="text-neutral-500 text-xs uppercase font-semibold">
+              Add by handle
+            </span>
+            <div className="flex flex-row gap-2 items-center">
+              <InputGroup>
+                <InputGroupInput
+                  ref={addContactInputRef}
+                  type="text"
+                  placeholder="JohnDoe"
+                />
+                <InputGroupAddon align="inline-start">
+                  <AtSignIcon className="text-muted-foreground" />
+                </InputGroupAddon>
+              </InputGroup>
+              <Button onClick={sendContactRequestHandler}>
+                <UserPlus />
+              </Button>
+            </div>
+          </div>
+
           <span className="text-neutral-500 text-xs uppercase font-semibold">
             Received - {receivedContactRequests?.length ?? 0}
           </span>
