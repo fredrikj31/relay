@@ -1,0 +1,34 @@
+type: http_request
+model: http_request
+id: rq_fezg9uvbTj
+createdAt: 2026-05-15T20:10:41.060617800
+updatedAt: 2026-05-15T20:19:32.627728800
+workspaceId: wk_7tY3BVq6eP
+folderId: fl_HhX89m7wtm
+authentication: {}
+authenticationType: null
+body:
+  text: |-
+    {
+      "status": "<string>"
+    }
+bodyType: application/json
+description: Accepts or Declines a contact requests to another user.
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/json
+  id: null
+- enabled: true
+  name: Accept
+  value: application/json
+  id: null
+method: PUT
+name: /contacts/requests/:requestId
+sortPriority: 3000.0
+url: ${[baseUrl]}/contacts/requests/:requestId
+urlParameters:
+- enabled: true
+  name: :requestId
+  value: <uuid>
+  id: null

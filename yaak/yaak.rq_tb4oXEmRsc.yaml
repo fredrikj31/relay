@@ -1,0 +1,22 @@
+type: http_request
+model: http_request
+id: rq_tb4oXEmRsc
+createdAt: 2026-05-15T20:10:41.058654400
+updatedAt: 2026-05-15T20:10:41.058654800
+workspaceId: wk_7tY3BVq6eP
+folderId: null
+authentication: {}
+authenticationType: null
+body: {}
+bodyType: null
+description: Pings the server, to test the connection
+headers:
+- enabled: true
+  name: Accept
+  value: application/json
+  id: null
+method: GET
+name: Healthcheck Endpoint
+sortPriority: 0.0
+url: ${[baseUrl]}/healthcheck
+urlParameters: []
