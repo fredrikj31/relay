@@ -80,7 +80,7 @@ export function ContactList() {
         </TabsList>
         <TabsContent value="contacts">
           {/* Search */}
-          <div className="pb-3">
+          <div className="py-3 border border-y border-border border-x-0">
             <div className="relative">
               <Search
                 size={14}
@@ -93,28 +93,6 @@ export function ContactList() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full rounded-lg bg-muted pl-9 pr-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring transition"
               />
-            </div>
-          </div>
-
-          {/* Add Contact */}
-          <div className="py-3 border border-y border-border border-x-0">
-            <span className="text-neutral-500 text-xs uppercase font-semibold">
-              Add by handle
-            </span>
-            <div className="flex flex-row gap-2 items-center">
-              <InputGroup>
-                <InputGroupInput
-                  ref={addContactInputRef}
-                  type="text"
-                  placeholder="JohnDoe"
-                />
-                <InputGroupAddon align="inline-start">
-                  <AtSignIcon className="text-muted-foreground" />
-                </InputGroupAddon>
-              </InputGroup>
-              <Button>
-                <UserPlus />
-              </Button>
             </div>
           </div>
 
@@ -136,6 +114,28 @@ export function ContactList() {
           value="requests"
           className="flex flex-col gap-2 min-h-full"
         >
+          {/* Add Contact */}
+          <div className="py-3 border border-y border-border border-x-0">
+            <span className="text-neutral-500 text-xs uppercase font-semibold">
+              Add by handle
+            </span>
+            <div className="flex flex-row gap-2 items-center">
+              <InputGroup>
+                <InputGroupInput
+                  ref={addContactInputRef}
+                  type="text"
+                  placeholder="JohnDoe"
+                />
+                <InputGroupAddon align="inline-start">
+                  <AtSignIcon className="text-muted-foreground" />
+                </InputGroupAddon>
+              </InputGroup>
+              <Button onClick={sendContactRequestHandler}>
+                <UserPlus />
+              </Button>
+            </div>
+          </div>
+
           <span className="text-neutral-500 text-xs uppercase font-semibold">
             Received - {receivedContactRequests?.length ?? 0}
           </span>
