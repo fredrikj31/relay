@@ -1,0 +1,16 @@
+type: workspace
+model: workspace
+id: wk_7tY3BVq6eP
+createdAt: 2026-05-15T20:10:41.054814700
+updatedAt: 2026-05-15T20:23:33.013493200
+authentication:
+  token: ${[ cookie.value(name='access_token') ]}
+authenticationType: bearer
+description: The main and only API behind "relay"
+headers: []
+name: Relay
+encryptionKeyChallenge: null
+settingValidateCertificates: true
+settingFollowRedirects: true
+settingRequestTimeout: 0
+settingDnsOverrides: []
