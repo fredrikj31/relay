@@ -2,7 +2,7 @@ type: folder
 model: folder
 id: fl_gYAbGkbnqv
 createdAt: 2026-05-15T20:10:41.061032700
-updatedAt: 2026-05-15T20:10:41.061032900
+updatedAt: 2026-05-15T20:27:51.745738200
 workspaceId: wk_7tY3BVq6eP
 folderId: null
 authentication: {}
@@ -10,4 +10,4 @@ authenticationType: null
 description: ''
 headers: []
 name: contacts
-sortPriority: 6.0
+sortPriority: 3000.0
