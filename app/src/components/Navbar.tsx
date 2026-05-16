@@ -23,6 +23,8 @@ import {
   Users,
 } from "lucide-react";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
+import { useGetCurrentAccount } from "../api/accounts/getCurrentAccount/useGetCurrentAccount";
+import { Skeleton } from "@shadcn-ui/components/ui/skeleton";
 
 const NAV_ITEMS: {
   id: string;
@@ -100,6 +102,8 @@ const NavbarItem = ({
 
 export const Navbar = ({ isNavbarOpen }: { isNavbarOpen: boolean }) => {
   const location = useLocation();
+  const { data: currentAccount, isLoading: isCurrentAccountLoading } =
+    useGetCurrentAccount();
 
   return (
     <aside
@@ -148,25 +152,36 @@ export const Navbar = ({ isNavbarOpen }: { isNavbarOpen: boolean }) => {
         )}
 
         {/* Profile avatar with online dot */}
-        <Popover>
-          <PopoverTrigger>
-            <Avatar className="group hover:cursor-pointer">
-              <AvatarImage
-                src="https://github.com/shadcn.png"
-                alt="@shadcn"
-                className="group-hover:opacity-90"
-              />
-              <AvatarFallback>CN</AvatarFallback>
-              <AvatarBadge className="bg-green-600 dark:bg-green-800" />
-            </Avatar>
-          </PopoverTrigger>
-          <PopoverContent align="end">
-            <PopoverHeader>
-              <PopoverTitle>Title</PopoverTitle>
-              <PopoverDescription>Description text here.</PopoverDescription>
-            </PopoverHeader>
-          </PopoverContent>
-        </Popover>
+        {!currentAccount || isCurrentAccountLoading ? (
+          <Skeleton className="size-8 rounded-full" />
+        ) : (
+          <Popover>
+            <PopoverTrigger>
+              <Avatar className="group hover:cursor-pointer">
+                <AvatarImage
+                  src="https://github.com/shadcn.png"
+                  alt={`@${currentAccount.username}`}
+                  className="group-hover:opacity-90"
+                />
+                <AvatarFallback>
+                  {currentAccount.firstName[0]}
+                  {currentAccount.lastName[0]}
+                </AvatarFallback>
+                <AvatarBadge className="bg-green-600 dark:bg-green-800" />
+              </Avatar>
+            </PopoverTrigger>
+            <PopoverContent align="end">
+              <PopoverHeader>
+                <PopoverTitle>
+                  {currentAccount.firstName} {currentAccount.lastName}
+                </PopoverTitle>
+                <PopoverDescription>
+                  @{currentAccount.username}
+                </PopoverDescription>
+              </PopoverHeader>
+            </PopoverContent>
+          </Popover>
+        )}
       </div>
     </aside>
   );
