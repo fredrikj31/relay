@@ -38,6 +38,8 @@ import { useSendContactRequest } from "../api/contacts/sendContactRequest/useSen
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useQueryClient } from "@tanstack/react-query";
+import { useDeleteContactRequest } from "../api/contacts/deleteContactRequest/useDeleteContactRequest";
+import { queryKeys } from "../api/queryKeys";
 
 export function ContactList() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,6 +51,7 @@ export function ContactList() {
   const { data: sentContactRequests } = useListSentContactRequests();
   const { data: receivedContactRequests } = useListReceivedContactRequests();
   const { mutate: sendContactRequest } = useSendContactRequest();
+  const { mutate: deleteContactRequest } = useDeleteContactRequest();
 
   const filteredContacts = useMemo(() => {
     if (!contacts) return [];
@@ -77,7 +80,7 @@ export function ContactList() {
           position: "bottom-right",
         });
         queryClient.invalidateQueries({
-          queryKey: ["contacts", "requests", "sent"],
+          queryKey: queryKeys.contacts.requests.sent,
         });
         if (addContactInputRef.current) {
           addContactInputRef.current.value = "";
@@ -93,6 +96,30 @@ export function ContactList() {
             position: "bottom-right",
           });
         }
+      },
+    });
+  };
+
+  const deleteContactRequestHandler = ({
+    contactRequestId,
+    contactUsername,
+  }: {
+    contactRequestId: string;
+    contactUsername: string;
+  }) => {
+    deleteContactRequest(contactRequestId, {
+      onSuccess: () => {
+        toast.success(`Successfully canceled request to @${contactUsername}!`, {
+          position: "bottom-right",
+        });
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.contacts.requests.sent,
+        });
+      },
+      onError: () => {
+        toast.error("Unknown error occurred while trying to cancel request.", {
+          position: "bottom-right",
+        });
       },
     });
   };
@@ -256,6 +283,12 @@ export function ContactList() {
                   <Button
                     className="hover:cursor-pointer w-full"
                     variant="destructive"
+                    onClick={() =>
+                      deleteContactRequestHandler({
+                        contactRequestId: sentContactRequest.id,
+                        contactUsername: account.username,
+                      })
+                    }
                   >
                     <UserMinus /> Cancel
                   </Button>
