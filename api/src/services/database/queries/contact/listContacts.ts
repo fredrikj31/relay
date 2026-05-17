@@ -44,7 +44,9 @@ export const listContacts = async (
         contact
         JOIN account ON contact.contact_id = account.id
       WHERE
-        contact.account_id = ${accountId};
+        contact.account_id = ${accountId}
+      AND
+        contact.deleted_at IS NULL;
     `);
   } catch (error) {
     logger.error(error, "Error while listing account contacts in database.");

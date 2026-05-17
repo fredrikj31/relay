@@ -50,7 +50,9 @@ export const listReceivedContactRequests = async (
       WHERE
         contact_request.receiver_account_id = ${accountId}
       AND
-        contact_request.status = 'PENDING';
+        contact_request.status = 'PENDING'
+      AND
+        contact_request.deleted_at IS NULL;
     `);
   } catch (error) {
     logger.error(
