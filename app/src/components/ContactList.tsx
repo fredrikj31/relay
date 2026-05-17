@@ -40,6 +40,7 @@ import { AxiosError } from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteContactRequest } from "../api/contacts/deleteContactRequest/useDeleteContactRequest";
 import { queryKeys } from "../api/queryKeys";
+import { useAcceptOrDeclineContactRequest } from "../api/contacts/acceptOrDeclineContactRequest/useAcceptOrDeclineContactRequest";
 
 export function ContactList() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -52,6 +53,8 @@ export function ContactList() {
   const { data: receivedContactRequests } = useListReceivedContactRequests();
   const { mutate: sendContactRequest } = useSendContactRequest();
   const { mutate: deleteContactRequest } = useDeleteContactRequest();
+  const { mutate: acceptOrDeclineContactRequest } =
+    useAcceptOrDeclineContactRequest();
 
   const filteredContacts = useMemo(() => {
     if (!contacts) return [];
@@ -122,6 +125,46 @@ export function ContactList() {
         });
       },
     });
+  };
+
+  const acceptOrDeclineContactRequestHandler = ({
+    contactRequestId,
+    status,
+    senderUsername,
+  }: {
+    contactRequestId: string;
+    status: "accepted" | "declined";
+    senderUsername: string;
+  }) => {
+    acceptOrDeclineContactRequest(
+      { contactRequestId, status },
+      {
+        onSuccess: () => {
+          toast.success(
+            `Successfully ${status} request from @${senderUsername}!`,
+            {
+              position: "bottom-right",
+            },
+          );
+          queryClient.invalidateQueries({
+            queryKey: queryKeys.contacts.requests.received,
+          });
+          if (status === "accepted") {
+            queryClient.invalidateQueries({
+              queryKey: queryKeys.contacts.list,
+            });
+          }
+        },
+        onError: () => {
+          toast.error(
+            "Unknown error occurred while trying to accept/decline request.",
+            {
+              position: "bottom-right",
+            },
+          );
+        },
+      },
+    );
   };
 
   return (
@@ -238,10 +281,32 @@ export function ContactList() {
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-1 justify-end w-full">
-                    <Button className="hover:cursor-pointer" variant="outline">
+                    <Button
+                      className="hover:cursor-pointer"
+                      variant="outline"
+                      onClick={() =>
+                        acceptOrDeclineContactRequestHandler({
+                          contactRequestId: receivedContactRequest.id,
+                          status: "declined",
+                          senderUsername:
+                            receivedContactRequest.account.username,
+                        })
+                      }
+                    >
                       <XIcon /> Decline
                     </Button>
-                    <Button className="hover:cursor-pointer" variant="default">
+                    <Button
+                      className="hover:cursor-pointer"
+                      variant="default"
+                      onClick={() =>
+                        acceptOrDeclineContactRequestHandler({
+                          contactRequestId: receivedContactRequest.id,
+                          status: "accepted",
+                          senderUsername:
+                            receivedContactRequest.account.username,
+                        })
+                      }
+                    >
                       <UserCheck /> Accept
                     </Button>
                   </div>
