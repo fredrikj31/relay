@@ -29,6 +29,8 @@ export const deleteContactRequest = async (
         id = ${requestId}
       AND
         sender_account_id = ${accountId}
+      AND
+        status = 'PENDING'
       RETURNING *;
     `);
   } catch (error) {
