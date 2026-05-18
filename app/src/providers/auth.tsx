@@ -59,10 +59,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     if (!accessToken && refreshTokenCookie) {
-      refreshToken(refreshTokenCookie).then(() => {
-        setAccessToken(cookies.get("access_token"));
-        navigate("/");
-      });
+      refreshToken(refreshTokenCookie)
+        .then(() => {
+          setAccessToken(cookies.get("access_token"));
+          navigate("/");
+        })
+        .catch((error) => {
+          console.error(
+            "Failed to refresh access token. Deleting refresh_token cookie...",
+            error,
+          );
+          // Refresh failed — clear cookie and let the redirect happen
+          cookies.remove("refresh_token");
+        });
     }
   }, [navigate, accessToken, refreshTokenCookie]);
 
