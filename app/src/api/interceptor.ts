@@ -45,6 +45,10 @@ const isAccessTokenExpired = ({
 export const authInterceptor = async (
   axiosConfig: InternalAxiosRequestConfig,
 ) => {
+  if (axiosConfig.url === "/token") {
+    return axiosConfig;
+  }
+
   let accessTokenCookie = cookies.get("access_token");
   const refreshTokenCookie = cookies.get("refresh_token");
 
