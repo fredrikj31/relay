@@ -55,7 +55,7 @@ export const tokenHandler = async ({
   // Sign new access token
   const accessToken = signJwt({
     payload: {
-      userId: account.id,
+      accountId: account.id,
     },
     expiresInSeconds: config.jwt.accessTokenTTLSeconds, // 24 hours
   });
