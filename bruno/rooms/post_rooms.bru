@@ -1,0 +1,18 @@
+meta {
+  name: /rooms
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{host}}/rooms
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "roomName": null,
+    "membersAccountId": []
+  }
+}
