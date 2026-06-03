@@ -4,6 +4,7 @@ import { validateJwt } from "../../hooks/validateJwt";
 import { RoomSchema } from "../../types/room";
 import z from "zod";
 import { createRoomHandler } from "./handlers/createRoom";
+import { listRoomsHandler } from "./handlers/listRooms";
 
 export const roomRoutes: FastifyPluginAsync = async (instance) => {
   const app = instance.withTypeProvider<ZodTypeProvider>();
@@ -47,6 +48,36 @@ export const roomRoutes: FastifyPluginAsync = async (instance) => {
         membersAccountId,
       });
       return res.send(room);
+    },
+  );
+
+  app.get(
+    "/",
+    {
+      onRequest: validateJwt(),
+      schema: {
+        summary: "Lists rooms",
+        description: "Lists rooms that the user is member of",
+        tags: ["rooms"],
+        security: [
+          {
+            jwt: [""],
+          },
+        ],
+        response: {
+          "200": RoomSchema.array().describe(
+            "Returns rooms the user is member of.",
+          ),
+        },
+      },
+    },
+    async (req, res) => {
+      const accountId = req.account?.id;
+      const rooms = await listRoomsHandler({
+        database,
+        accountId,
+      });
+      return res.send(rooms);
     },
   );
 };
