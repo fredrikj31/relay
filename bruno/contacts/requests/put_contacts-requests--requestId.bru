@@ -1,0 +1,17 @@
+meta {
+  name: /contacts/requests/:requestId
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{host}}/contacts/requests
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "status": "<string>"
+  }
+}
