@@ -1,29 +1,20 @@
 type: http_request
 model: http_request
-id: rq_D8bEDqiG92
-createdAt: 2026-05-23T06:06:25.632105400
-updatedAt: 2026-05-31T07:42:40.552706800
+id: rq_nrDJMHkkUr
+createdAt: 2026-05-31T07:56:46.497458600
+updatedAt: 2026-05-31T07:57:21.188502100
 workspaceId: wk_7tY3BVq6eP
 folderId: fl_3itu7PLg3o
 authentication: {}
 authenticationType: null
-body:
-  text: |-
-    {
-      "roomName": null,
-      "membersAccountId": ["d3295f4a-f757-4efb-acaa-d0d6d5dec783"]
-    }
-bodyType: application/json
+body: {}
+bodyType: null
 description: ''
-headers:
-- enabled: true
-  name: Content-Type
-  value: application/json
-  id: T4PQ3AWwx9
-method: POST
+headers: []
+method: GET
 name: /rooms
 sortPriority: 3000.0
-url: ${[baseUrl]}/rooms
+url: ${[ baseUrl ]}/rooms
 urlParameters: []
 settingSendCookies:
   enabled: false
