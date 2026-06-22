@@ -32,7 +32,7 @@
     "fastify-type-provider-zod": "^6.1.0",
     "jsonwebtoken": "^9.0.3",
     "pino": "^10.3.1",
-    "slonik": "^49.10.0",
+    "slonik": "^49.10.7",
     "slonik-interceptor-field-name-transformation": "^48.14.0",
     "zod": "^4.4.3"
   }
