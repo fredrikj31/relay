@@ -16,6 +16,9 @@
     "api:format:write": "pnpm run --filter @relay/api format:write",
     "api:auth:generate": "pnpm run --filter @relay/api auth:generate",
     "api:auth:migrate": "pnpm run --filter @relay/api auth:migrate",
+    "api:database:push": "pnpm run --filter @relay/api database:push",
+    "api:database:generate": "pnpm run --filter @relay/api database:generate",
+    "api:database:migrate": "pnpm run --filter @relay/api database:migrate",
     "prepare": "husky",
     "pre-commit": "lint-staged -c lint-staged.config.js"
   },

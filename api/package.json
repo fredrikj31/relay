@@ -9,7 +9,10 @@
     "format:check": "prettier . --check",
     "format:write": "prettier . --write",
     "auth:generate": "pnpm dlx auth@latest generate",
-    "auth:migrate": "pnpm dlx auth@latest migrate"
+    "auth:migrate": "pnpm dlx auth@latest migrate",
+    "database:push": "pnpm exec drizzle-kit push",
+    "database:generate": "pnpm exec drizzle-kit generate",
+    "database:migrate": "pnpm exec drizzle-kit migrate"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
