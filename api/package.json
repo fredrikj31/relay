@@ -7,7 +7,9 @@
     "start": "node build/app.js",
     "lint": "eslint . --max-warnings 0",
     "format:check": "prettier . --check",
-    "format:write": "prettier . --write"
+    "format:write": "prettier . --write",
+    "auth:generate": "pnpm dlx auth@latest generate",
+    "auth:migrate": "pnpm dlx auth@latest migrate"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
