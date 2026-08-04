@@ -136,6 +136,9 @@ importers:
       axios:
         specifier: ^1.18.0
         version: 1.18.0
+      better-auth:
+        specifier: ^1.6.25
+        version: 1.6.25(@opentelemetry/api@1.9.1)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@opentelemetry/api@1.9.1)(@types/pg@8.20.3)(pg@8.22.0)(zod@4.4.3))(pg@8.22.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
