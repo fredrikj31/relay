@@ -9,11 +9,13 @@ import { actionRoutes } from "./actions";
 import { accountRoutes } from "./accounts";
 import { contactRoutes } from "./contacts";
 import { roomRoutes } from "./rooms";
+import { authRoutes } from "./auth";
 
 export const routes: FastifyPluginAsync = async (instance) => {
   instance.setValidatorCompiler(validatorCompiler);
   instance.setSerializerCompiler(serializerCompiler);
 
+  instance.register(authRoutes, { prefix: "/" });
   instance.register(actionRoutes, { prefix: "/" });
   instance.register(accountRoutes, { prefix: "/accounts" });
   instance.register(contactRoutes, { prefix: "/contacts" });
