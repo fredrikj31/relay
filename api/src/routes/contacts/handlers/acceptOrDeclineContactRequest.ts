@@ -7,16 +7,16 @@ import { createContact } from "../../../services/database/queries/contact/create
 interface AcceptOrDeclineContactRequestHandlerOptions {
   database: CommonQueryMethods;
   status: "accepted" | "declined";
-  accountId: string | undefined;
+  userId: string | undefined;
   requestId: string;
 }
 export const acceptOrDeclineContactRequest = async ({
   database,
   status,
-  accountId,
+  userId,
   requestId,
 }: AcceptOrDeclineContactRequestHandlerOptions): Promise<ContactRequest> => {
-  if (!accountId) {
+  if (!userId) {
     throw new UnauthorizedError({
       code: "account-id-not-found-in-request",
       message: "A account id wasn't found in the request object",
@@ -26,7 +26,7 @@ export const acceptOrDeclineContactRequest = async ({
   if (status === "accepted") {
     const contactRequest = database.transaction(async (transaction) => {
       const contactRequest = await updateContactRequest(transaction, {
-        accountId,
+        accountId: userId,
         requestId,
         status: "ACCEPTED",
       });
@@ -48,7 +48,7 @@ export const acceptOrDeclineContactRequest = async ({
   if (status === "declined") {
     const contactRequest = database.transaction(async (transaction) => {
       const contactRequest = await updateContactRequest(transaction, {
-        accountId,
+        accountId: userId,
         requestId,
         status: "DECLINED",
       });

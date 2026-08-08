@@ -67,8 +67,6 @@ process.on("SIGTERM", () => {
 
 declare module "fastify" {
   interface FastifyRequest {
-    account?: {
-      id: string;
-    };
+    userId?: string;
   }
 }

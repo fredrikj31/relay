@@ -2,7 +2,7 @@ import { CommonQueryMethods, sql } from "slonik";
 import { logger } from "../../../../logger";
 import { InternalServerError } from "../../../../errors/server";
 import { Contact, ContactSchema } from "../../../../types/contact";
-import { Account, AccountSchema } from "../../../../types/account";
+import { User, UserSchema } from "../../../../types/user";
 
 interface ListContactsOptions {
   accountId: string;
@@ -13,19 +13,14 @@ export const listContacts = async (
 ): Promise<
   Readonly<
     (Omit<Contact, "accountId" | "contactId"> & {
-      account: Pick<Account, "id" | "username" | "firstName" | "lastName">;
+      user: User;
     })[]
   >
 > => {
   try {
     return await database.any(sql.type(
       ContactSchema.omit({ accountId: true, contactId: true }).extend({
-        account: AccountSchema.pick({
-          id: true,
-          username: true,
-          firstName: true,
-          lastName: true,
-        }),
+        user: UserSchema,
       }),
     )`
       SELECT
@@ -35,14 +30,13 @@ export const listContacts = async (
         contact.updated_at as updated_at,
         contact.deleted_at as deleted_at,
         json_build_object(
-          'id', account.id,
-          'username', account.username,
-          'firstName', account.first_name,
-          'lastName', account.last_name
-        ) as account
+          'id', "user".id,
+          'username', "user".username,
+          'name', "user".name
+        ) as user
       FROM
         contact
-        JOIN account ON contact.contact_id = account.id
+        JOIN "user" ON contact.contact_id = "user".id
       WHERE
         contact.account_id = ${accountId}
       AND

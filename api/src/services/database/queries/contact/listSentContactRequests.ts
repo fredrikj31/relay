@@ -5,7 +5,7 @@ import {
   ContactRequest,
   ContactRequestSchema,
 } from "../../../../types/contact";
-import { Account, AccountSchema } from "../../../../types/account";
+import { User, UserSchema } from "../../../../types/user";
 
 interface ListSentContactRequestsOptions {
   accountId: string;
@@ -16,19 +16,14 @@ export const listSentContactRequests = async (
 ): Promise<
   Readonly<
     (Omit<ContactRequest, "senderAccountId"> & {
-      account: Pick<Account, "id" | "username" | "firstName" | "lastName">;
+      user: User;
     })[]
   >
 > => {
   try {
     return await database.any(sql.type(
       ContactRequestSchema.omit({ senderAccountId: true }).extend({
-        account: AccountSchema.pick({
-          id: true,
-          username: true,
-          firstName: true,
-          lastName: true,
-        }),
+        user: UserSchema,
       }),
     )`
       SELECT
@@ -39,14 +34,13 @@ export const listSentContactRequests = async (
         contact_request.updated_at as updated_at,
         contact_request.deleted_at as deleted_at,
         json_build_object(
-          'id', account.id,
-          'username', account.username,
-          'firstName', account.first_name,
-          'lastName', account.last_name
-        ) as account
+          'id', "user".id,
+          'username', "user".username,
+          'name', "user".name
+        ) as user
       FROM
         contact_request
-        JOIN account ON contact_request.receiver_account_id = account.id
+        JOIN "user" ON contact_request.receiver_account_id = "user".id
       WHERE
         contact_request.sender_account_id = ${accountId}
       AND

@@ -2,21 +2,21 @@ import { CommonQueryMethods } from "slonik";
 import { Contact } from "../../../types/contact";
 import { listContacts } from "../../../services/database/queries/contact/listContacts";
 import { UnauthorizedError } from "../../../errors/client";
-import { Account } from "../../../types/account";
+import { User } from "../../../types/user";
 
 interface ListAccountContactsHandlerOptions {
   database: CommonQueryMethods;
-  accountId: string | undefined;
+  userId: string | undefined;
 }
 export const listAccountContactsHandler = async ({
   database,
-  accountId,
+  userId,
 }: ListAccountContactsHandlerOptions): Promise<
   (Omit<Contact, "accountId" | "contactId"> & {
-    account: Pick<Account, "id" | "username" | "firstName" | "lastName">;
+    user: User;
   })[]
 > => {
-  if (!accountId) {
+  if (!userId) {
     throw new UnauthorizedError({
       code: "account-id-not-found-in-request",
       message: "A account id wasn't found in the request object",
@@ -24,7 +24,7 @@ export const listAccountContactsHandler = async ({
   }
 
   const contacts = await listContacts(database, {
-    accountId,
+    accountId: userId,
   });
 
   return [...contacts];

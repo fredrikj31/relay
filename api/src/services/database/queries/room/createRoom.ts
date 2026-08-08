@@ -75,7 +75,7 @@ export const createRoom = async (
               memberAccountId,
             ]),
           ],
-          ["uuid", "timestamptz", "timestamptz", "timestamptz", "uuid", "uuid"],
+          ["uuid", "timestamptz", "timestamptz", "timestamptz", "uuid", "text"],
         )}
         RETURNING *;
       `);

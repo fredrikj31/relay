@@ -5,15 +5,15 @@ import { ContactRequest } from "../../../types/contact";
 
 interface DeleteContactRequestHandlerOptions {
   database: CommonQueryMethods;
-  accountId: string | undefined;
+  userId: string | undefined;
   requestId: string;
 }
 export const deleteContactRequestHandler = async ({
   database,
-  accountId,
+  userId,
   requestId,
 }: DeleteContactRequestHandlerOptions): Promise<ContactRequest> => {
-  if (!accountId) {
+  if (!userId) {
     throw new UnauthorizedError({
       code: "account-id-not-found-in-request",
       message: "A account id wasn't found in the request object",
@@ -21,7 +21,7 @@ export const deleteContactRequestHandler = async ({
   }
 
   const contactRequest = await deleteContactRequest(database, {
-    accountId,
+    accountId: userId,
     requestId,
   });
 
