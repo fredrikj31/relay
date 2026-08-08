@@ -19,7 +19,7 @@ import {
 } from "@shadcn-ui/components/ui/avatar";
 import { useListContacts } from "../api/contacts/listContacts/useListContacts";
 import { Contact } from "../types/Contact";
-import { Account } from "../types/Account";
+import { User } from "../types/User";
 import {
   InputGroup,
   InputGroupAddon,
@@ -60,9 +60,7 @@ export function ContactList() {
     if (!contacts) return [];
 
     return contacts.filter((c) =>
-      (c.account.firstName + " " + c.account.lastName)
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()),
+      c.user.name.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [contacts]);
 
@@ -255,7 +253,7 @@ export function ContactList() {
 
           <ul role="list">
             {(receivedContactRequests ?? []).map((receivedContactRequest) => {
-              const { account } = receivedContactRequest;
+              const { user } = receivedContactRequest;
 
               return (
                 <li
@@ -273,10 +271,10 @@ export function ContactList() {
                     </Avatar>
                     <div className="flex flex-col">
                       <span className="text-sm font-medium text-foreground">
-                        {account.firstName} {account.lastName}
+                        {user.name}
                       </span>
                       <span className="text-xs text-muted-foreground">
-                        @{account.username}
+                        @{user.username}
                       </span>
                     </div>
                   </div>
@@ -288,8 +286,7 @@ export function ContactList() {
                         acceptOrDeclineContactRequestHandler({
                           contactRequestId: receivedContactRequest.id,
                           status: "declined",
-                          senderUsername:
-                            receivedContactRequest.account.username,
+                          senderUsername: receivedContactRequest.user.username,
                         })
                       }
                     >
@@ -302,8 +299,7 @@ export function ContactList() {
                         acceptOrDeclineContactRequestHandler({
                           contactRequestId: receivedContactRequest.id,
                           status: "accepted",
-                          senderUsername:
-                            receivedContactRequest.account.username,
+                          senderUsername: receivedContactRequest.user.username,
                         })
                       }
                     >
@@ -321,7 +317,7 @@ export function ContactList() {
 
           <ul role="list" className="flex flex-col gap-4">
             {(sentContactRequests ?? []).map((sentContactRequest) => {
-              const { account } = sentContactRequest;
+              const { user } = sentContactRequest;
               return (
                 <li
                   key={sentContactRequest.id}
@@ -338,10 +334,10 @@ export function ContactList() {
                     </Avatar>
                     <div className="flex flex-col">
                       <span className="text-sm font-medium text-foreground">
-                        {account.firstName} {account.lastName}
+                        {user.name}
                       </span>
                       <span className="text-xs text-muted-foreground">
-                        @{account.username}
+                        @{user.username}
                       </span>
                     </div>
                   </div>
@@ -351,7 +347,7 @@ export function ContactList() {
                     onClick={() =>
                       deleteContactRequestHandler({
                         contactRequestId: sentContactRequest.id,
-                        contactUsername: account.username,
+                        contactUsername: user.username,
                       })
                     }
                   >
@@ -371,11 +367,11 @@ function ContactListItem({
   contact,
 }: {
   contact: Pick<Contact, "id" | "createdAt" | "updatedAt" | "deletedAt"> & {
-    account: Pick<Account, "id" | "username" | "firstName" | "lastName">;
+    user: User;
   };
   // TODO: isOnline: boolean
 }) {
-  const { firstName, lastName, username } = contact.account;
+  const { name, username } = contact.user;
   return (
     <li>
       <button
@@ -395,9 +391,7 @@ function ContactListItem({
           />
         </Avatar>
         <div className="flex flex-col">
-          <span className="text-sm font-medium text-foreground">
-            {firstName} {lastName}
-          </span>
+          <span className="text-sm font-medium text-foreground">{name}</span>
           <span className="text-xs text-muted-foreground">@{username}</span>
         </div>
       </button>
