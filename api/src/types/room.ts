@@ -10,7 +10,7 @@ export const RoomSchema = z.object({
   deletedAt: z.iso.datetime().nullable(),
   type: RoomTypeSchema,
   name: z.string().nullable(),
-  ownerAccountId: z.uuid(),
+  ownerAccountId: z.string(),
 });
 export type Room = z.infer<typeof RoomSchema>;
 
@@ -20,6 +20,6 @@ export const RoomMemberSchema = z.object({
   updatedAt: z.iso.datetime().nullable(),
   deletedAt: z.iso.datetime().nullable(),
   roomId: z.uuid(),
-  accountId: z.uuid(),
+  accountId: z.string(),
 });
 export type RoomMember = z.infer<typeof RoomMemberSchema>;
