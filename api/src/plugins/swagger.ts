@@ -23,11 +23,11 @@ export const swaggerConfig: FastifyDynamicSwaggerOptions = {
     ],
     components: {
       securitySchemes: {
-        jwt: {
-          name: "Authorization",
-          in: "header",
+        session: {
+          name: "better-auth.session_token",
+          in: "cookie",
           type: "apiKey",
-          description: "Authentication with your access token",
+          description: "Authentication with your better-auth session cookie",
         },
       },
     },

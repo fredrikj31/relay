@@ -6,21 +6,23 @@ import {
 import { logger } from "../../../../logger";
 import { InternalServerError } from "../../../../errors/server";
 import { NotFoundError } from "../../../../errors/client";
-import { Account, AccountSchema } from "../../../../types/account";
+import { User, UserSchema } from "../../../../types/user";
 
-interface GetAccountByUsernameOptions {
+interface GetUserByUsernameOptions {
   username: string;
 }
-export const getAccountByUsername = async (
+export const getUserByUsername = async (
   database: CommonQueryMethods,
-  { username }: GetAccountByUsernameOptions,
-): Promise<Account> => {
+  { username }: GetUserByUsernameOptions,
+): Promise<User> => {
   try {
-    return await database.one(sql.type(AccountSchema)`
+    return await database.one(sql.type(UserSchema)`
       SELECT
-        *
+        id,
+        username,
+        name
       FROM
-        account
+        "user"
       WHERE
         username = ${username};
     `);

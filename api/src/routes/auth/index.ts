@@ -6,7 +6,7 @@ import { logger } from "../../logger";
 export const authRoutes: FastifyPluginAsync = async (instance) => {
   instance.route({
     method: ["GET", "POST"],
-    url: "/api/auth/*",
+    url: "/auth/*",
     schema: {
       tags: ["auth"],
     },
