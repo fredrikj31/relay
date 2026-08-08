@@ -1,26 +1,23 @@
-import { apiClient } from "../../client";
-import { Account, AccountSchema } from "../../../types/Account";
+import { authClient } from "../../../auth/auth";
 
-export const signup = async (
-  account: Pick<
-    Account,
-    "email" | "username" | "firstName" | "lastName" | "password"
-  >,
-): Promise<
-  Omit<
-    Account,
-    "createdAt" | "updatedAt" | "deletedAt" | "password" | "passwordSalt"
-  >
-> => {
+export const signup = async ({
+  email,
+  username,
+  name,
+  password,
+}: {
+  email: string;
+  username: string;
+  name: string;
+  password: string;
+}): Promise<void> => {
   try {
-    const { data } = await apiClient.post("/signup", account);
-    return AccountSchema.omit({
-      createdAt: true,
-      updatedAt: true,
-      deletedAt: true,
-      password: true,
-      passwordSalt: true,
-    }).parse(data);
+    await authClient.signUp.email({
+      email,
+      password,
+      name,
+      username,
+    });
   } catch (error) {
     console.error("Failed to sign up user", error);
     throw error;

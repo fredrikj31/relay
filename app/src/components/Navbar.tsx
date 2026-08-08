@@ -12,19 +12,31 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from "@shadcn-ui/components/ui/popover";
+import { Button } from "@shadcn-ui/components/ui/button";
+import { Separator } from "@shadcn-ui/components/ui/separator";
 import { cn } from "@shadcn-ui/lib/utils";
 import { Link, useLocation } from "react-router";
 import {
   Archive,
   House,
+  LogOut,
   LucideProps,
   MessageCircle,
   Settings,
   Users,
 } from "lucide-react";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
-import { useGetCurrentAccount } from "../api/accounts/getCurrentAccount/useGetCurrentAccount";
 import { Skeleton } from "@shadcn-ui/components/ui/skeleton";
+import { useAuth } from "../providers/auth";
+
+const getInitials = (name: string): string => {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  const first = parts.at(0);
+  const last = parts.at(-1);
+  if (!first || !last) return "";
+  if (parts.length === 1) return first.slice(0, 2).toUpperCase();
+  return `${first[0]}${last[0]}`.toUpperCase();
+};
 
 const NAV_ITEMS: {
   id: string;
@@ -101,9 +113,8 @@ const NavbarItem = ({
 };
 
 export const Navbar = ({ isNavbarOpen }: { isNavbarOpen: boolean }) => {
+  const { isPending, user, logout } = useAuth();
   const location = useLocation();
-  const { data: currentAccount, isLoading: isCurrentAccountLoading } =
-    useGetCurrentAccount();
 
   return (
     <aside
@@ -152,7 +163,7 @@ export const Navbar = ({ isNavbarOpen }: { isNavbarOpen: boolean }) => {
         )}
 
         {/* Profile avatar with online dot */}
-        {!currentAccount || isCurrentAccountLoading ? (
+        {!user || isPending ? (
           <Skeleton className="size-8 rounded-full" />
         ) : (
           <Popover>
@@ -160,25 +171,28 @@ export const Navbar = ({ isNavbarOpen }: { isNavbarOpen: boolean }) => {
               <Avatar className="group hover:cursor-pointer">
                 <AvatarImage
                   src="https://github.com/shadcn.png"
-                  alt={`@${currentAccount.username}`}
+                  alt={user.name}
                   className="group-hover:opacity-90"
                 />
-                <AvatarFallback>
-                  {currentAccount.firstName[0]}
-                  {currentAccount.lastName[0]}
-                </AvatarFallback>
+                <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
                 <AvatarBadge className="bg-green-600 dark:bg-green-800" />
               </Avatar>
             </PopoverTrigger>
             <PopoverContent align="end">
               <PopoverHeader>
-                <PopoverTitle>
-                  {currentAccount.firstName} {currentAccount.lastName}
-                </PopoverTitle>
-                <PopoverDescription>
-                  @{currentAccount.username}
-                </PopoverDescription>
+                <PopoverTitle>{user.name}</PopoverTitle>
+                {user.username && (
+                  <PopoverDescription>@{user.username}</PopoverDescription>
+                )}
               </PopoverHeader>
+              <Separator />
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => logout()}
+              >
+                <LogOut /> Log out
+              </Button>
             </PopoverContent>
           </Popover>
         )}

@@ -1,10 +1,10 @@
 import { apiClient } from "../../client";
-import { Account, AccountSchema } from "../../../types/Account";
+import { User, UserSchema } from "../../../types/User";
 import { Contact, ContactSchema } from "../../../types/Contact";
 
 export const listContacts = async (): Promise<
   (Pick<Contact, "id" | "createdAt" | "updatedAt" | "deletedAt"> & {
-    account: Pick<Account, "id" | "username" | "firstName" | "lastName">;
+    user: User;
   })[]
 > => {
   try {
@@ -16,12 +16,7 @@ export const listContacts = async (): Promise<
       deletedAt: true,
     })
       .extend({
-        account: AccountSchema.pick({
-          id: true,
-          username: true,
-          firstName: true,
-          lastName: true,
-        }),
+        user: UserSchema,
       })
       .array()
       .parse(data);

@@ -1,11 +1,25 @@
-import { apiClient } from "../../client";
-import { Account } from "../../../types/Account";
+import { User } from "better-auth";
+import { authClient } from "../../../auth/auth";
 
-export const login = async (
-  account: Pick<Account, "email" | "password">,
-): Promise<void> => {
+export const login = async ({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}): Promise<User | null> => {
   try {
-    await apiClient.post("/login", account);
+    const { data, error } = await authClient.signIn.email({
+      email,
+      password,
+    });
+
+    if (error) {
+      console.error("Failed to login user", error);
+      return null;
+    }
+
+    return data?.user ?? null;
   } catch (error) {
     console.error("Failed to login user", error);
     throw error;

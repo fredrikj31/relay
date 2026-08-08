@@ -5,13 +5,13 @@ import { UnauthorizedError } from "../../../errors/client";
 
 interface ListRoomsHandlerOptions {
   database: CommonQueryMethods;
-  accountId: string | undefined;
+  userId: string | undefined;
 }
 export const listRoomsHandler = async ({
   database,
-  accountId,
+  userId,
 }: ListRoomsHandlerOptions): Promise<Room[]> => {
-  if (!accountId) {
+  if (!userId) {
     throw new UnauthorizedError({
       code: "account-id-not-found-in-request",
       message: "A account id wasn't found in the request object",
@@ -19,7 +19,7 @@ export const listRoomsHandler = async ({
   }
 
   const rooms = await listRooms(database, {
-    accountId,
+    accountId: userId,
   });
 
   return rooms;

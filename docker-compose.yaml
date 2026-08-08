@@ -5,7 +5,8 @@ x-logging: &default-logging
     max-file: "3"
 
 services:
-  local-database:
+  # ----- DEVELOPMENT -----
+  dev-database:
     container_name: relay-database
     image: postgres:18-alpine
     restart: always
@@ -19,9 +20,9 @@ services:
       - 5432:5432
     volumes:
       - database-data:/var/lib/postgresql # store data from postgresql in the volume
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql # init database with SQL files from local "database" folder
     logging: *default-logging
 
+  # ----- PRODUCTION -----
   database:
     container_name: relay-database
     image: postgres:18-alpine
@@ -37,53 +38,81 @@ services:
     networks:
       - relay-network
     volumes:
-      - database-data:/var/lib/postgresql # store data from postgresql in the volume
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql # init database with SQL files from local "database" folder
+      - database-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d relay"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    logging: *default-logging
+
+  migrate:
+    container_name: relay-migrate
+    image: relay-backend:latest
+    profiles:
+      - prod
+    environment:
+      WEBSITE_BASE_URL: ${WEBSITE_BASE_URL}
+      DATABASE_HOST: relay-database
+      DATABASE_PORT: 5432
+      DATABASE_NAME: relay
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL}
+    command: ["node", "build/migrate.js"]
+    volumes:
+      - ./api/drizzle:/app/drizzle:ro
+    networks:
+      - relay-network
+    depends_on:
+      database:
+        condition: service_healthy
     logging: *default-logging
 
   backend:
     container_name: relay-backend
-    image: fredrikj31/relay-backend:latest
+    image: relay-backend:latest
     restart: always
     profiles:
       - prod
     environment:
       WEBSITE_BASE_URL: ${WEBSITE_BASE_URL}
       DATABASE_HOST: relay-database
-      DATABASE_PORT: 5432 # Must be set to "5432", because the backend and database shares network
+      DATABASE_PORT: 5432
       DATABASE_NAME: relay
       DATABASE_USER: ${DATABASE_USER}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-      TOKEN_PASSWORD_SALT: ${TOKEN_PASSWORD_SALT}
-      TOKEN_JWT_PRIVATE_KEY: ${TOKEN_JWT_PRIVATE_KEY}
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL}
     networks:
       - relay-network
-      - cloudflared
+      # - cloudflared
     ports:
       - 4002:3000
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
     logging: *default-logging
 
   frontend:
     container_name: relay-frontend
-    image: fredrikj31/relay-frontend:latest
+    image: relay-frontend:latest
     restart: always
     profiles:
       - prod
     environment:
       MY_APP_API_BASE_URL: ${MY_APP_API_BASE_URL}
-    networks:
-      - cloudflared
+    # networks:
+    # - cloudflared
     ports:
       - 4003:80
-    logging: *default-logging
 
 networks:
   relay-network:
     driver: bridge
-  cloudflared:
-    external: true
+  # cloudflared:
+  #   external: true
 
 volumes:
   database-data:

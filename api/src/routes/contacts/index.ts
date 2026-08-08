@@ -1,13 +1,13 @@
 import { FastifyPluginAsync } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { validateJwt } from "../../hooks/validateJwt";
+import { validateSession } from "../../hooks/validateSession";
 import z from "zod";
 import { ContactRequestSchema, ContactSchema } from "../../types/contact";
+import { UserSchema } from "../../types/user";
 import { createContactRequestHandler } from "./handlers/createContactRequest";
 import { deleteContactRequestHandler } from "./handlers/deleteContactRequest";
 import { acceptOrDeclineContactRequest } from "./handlers/acceptOrDeclineContactRequest";
 import { listAccountContactsHandler } from "./handlers/listAccountContacts";
-import { AccountSchema } from "../../types/account";
 import { listSentContactRequestsHandler } from "./handlers/listSentContactRequests";
 import { listReceivedContactRequestsHandler } from "./handlers/listReceivedContactRequests";
 
@@ -18,39 +18,29 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
   app.get(
     "/",
     {
-      onRequest: validateJwt(),
+      onRequest: validateSession(),
       schema: {
         summary: "List account's contacts",
         description:
-          "Lists account's contacts and their account profile with details about them.",
+          "Lists account's contacts and their user profile with details about them.",
         tags: ["contacts"],
-        security: [
-          {
-            jwt: [""],
-          },
-        ],
         response: {
           "200": ContactSchema.omit({ accountId: true, contactId: true })
             .extend({
-              account: AccountSchema.pick({
-                id: true,
-                username: true,
-                firstName: true,
-                lastName: true,
-              }),
+              user: UserSchema,
             })
             .array()
             .describe(
-              "Returns a list of the account's contacts, and their account.",
+              "Returns a list of the account's contacts, and their user.",
             ),
         },
       },
     },
     async (req, res) => {
-      const accountId = req.account?.id;
+      const userId = req.userId;
       const contacts = await listAccountContactsHandler({
         database,
-        accountId,
+        userId,
       });
       return res.send(contacts);
     },
@@ -59,16 +49,11 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
   app.post(
     "/requests",
     {
-      onRequest: validateJwt(),
+      onRequest: validateSession(),
       schema: {
         summary: "Creates a new contact request",
         description: "Creates a new contact requests to another user.",
         tags: ["contacts"],
-        security: [
-          {
-            jwt: [""],
-          },
-        ],
         body: z.object({
           username: z.string(),
         }),
@@ -78,11 +63,11 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
       },
     },
     async (req, res) => {
-      const accountId = req.account?.id;
+      const userId = req.userId;
       const { username } = req.body;
       const contactRequest = await createContactRequestHandler({
         database,
-        accountId,
+        userId,
         username,
       });
 
@@ -93,16 +78,11 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
   app.delete(
     "/requests/:requestId",
     {
-      onRequest: validateJwt(),
+      onRequest: validateSession(),
       schema: {
         summary: "Deletes a contact request",
         description: "Deletes a contact requests to another user.",
         tags: ["contacts"],
-        security: [
-          {
-            jwt: [""],
-          },
-        ],
         params: z.object({
           requestId: z.uuid(),
         }),
@@ -112,11 +92,11 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
       },
     },
     async (req, res) => {
-      const accountId = req.account?.id;
+      const userId = req.userId;
       const { requestId } = req.params;
       const contactRequest = await deleteContactRequestHandler({
         database,
-        accountId,
+        userId,
         requestId,
       });
 
@@ -127,16 +107,11 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
   app.put(
     "/requests/:requestId",
     {
-      onRequest: validateJwt(),
+      onRequest: validateSession(),
       schema: {
         summary: "Accepts or Declines a contact request",
         description: "Accepts or Declines a contact requests to another user.",
         tags: ["contacts"],
-        security: [
-          {
-            jwt: [""],
-          },
-        ],
         params: z.object({
           requestId: z.uuid(),
         }),
@@ -149,12 +124,12 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
       },
     },
     async (req, res) => {
-      const accountId = req.account?.id;
+      const userId = req.userId;
       const { requestId } = req.params;
       const { status } = req.body;
       const contactRequest = await acceptOrDeclineContactRequest({
         database,
-        accountId,
+        userId,
         requestId,
         status,
       });
@@ -166,35 +141,25 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
   app.get(
     "/requests/sent",
     {
-      onRequest: validateJwt(),
+      onRequest: validateSession(),
       schema: {
         summary: "List account's sent contact requests",
         description: "Lists account's sent contact requests to other accounts.",
         tags: ["contacts"],
-        security: [
-          {
-            jwt: [""],
-          },
-        ],
         response: {
           "200": ContactRequestSchema.omit({ senderAccountId: true })
             .extend({
-              account: AccountSchema.pick({
-                id: true,
-                username: true,
-                firstName: true,
-                lastName: true,
-              }),
+              user: UserSchema,
             })
             .array(),
         },
       },
     },
     async (req, res) => {
-      const accountId = req.account?.id;
+      const userId = req.userId;
       const sentContactRequests = await listSentContactRequestsHandler({
         database,
-        accountId,
+        userId,
       });
 
       return res.status(200).send(sentContactRequests);
@@ -204,36 +169,26 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
   app.get(
     "/requests/received",
     {
-      onRequest: validateJwt(),
+      onRequest: validateSession(),
       schema: {
         summary: "List account's received contact requests",
         description:
           "Lists account's received contact requests to other accounts.",
         tags: ["contacts"],
-        security: [
-          {
-            jwt: [""],
-          },
-        ],
         response: {
           "200": ContactRequestSchema.omit({ receiverAccountId: true })
             .extend({
-              account: AccountSchema.pick({
-                id: true,
-                username: true,
-                firstName: true,
-                lastName: true,
-              }),
+              user: UserSchema,
             })
             .array(),
         },
       },
     },
     async (req, res) => {
-      const accountId = req.account?.id;
+      const userId = req.userId;
       const receivedContactRequests = await listReceivedContactRequestsHandler({
         database,
-        accountId,
+        userId,
       });
 
       return res.status(200).send(receivedContactRequests);

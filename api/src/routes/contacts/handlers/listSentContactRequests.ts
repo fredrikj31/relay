@@ -1,22 +1,22 @@
 import { CommonQueryMethods } from "slonik";
 import { ContactRequest } from "../../../types/contact";
-import { Account } from "../../../types/account";
+import { User } from "../../../types/user";
 import { listSentContactRequests } from "../../../services/database/queries/contact/listSentContactRequests";
 import { UnauthorizedError } from "../../../errors/client";
 
 interface ListSentContactRequestsHandlerOptions {
   database: CommonQueryMethods;
-  accountId: string | undefined;
+  userId: string | undefined;
 }
 export const listSentContactRequestsHandler = async ({
   database,
-  accountId,
+  userId,
 }: ListSentContactRequestsHandlerOptions): Promise<
   (Omit<ContactRequest, "senderAccountId"> & {
-    account: Pick<Account, "id" | "username" | "firstName" | "lastName">;
+    user: User;
   })[]
 > => {
-  if (!accountId) {
+  if (!userId) {
     throw new UnauthorizedError({
       code: "account-id-not-found-in-request",
       message: "A account id wasn't found in the request object",
@@ -24,7 +24,7 @@ export const listSentContactRequestsHandler = async ({
   }
 
   const sentContactRequests = await listSentContactRequests(database, {
-    accountId,
+    accountId: userId,
   });
 
   return [...sentContactRequests];

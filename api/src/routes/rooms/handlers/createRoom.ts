@@ -5,17 +5,17 @@ import { createRoom } from "../../../services/database/queries/room/createRoom";
 
 interface CreateRoomHandlerOptions {
   database: CommonQueryMethods;
-  accountId: string | undefined;
+  userId: string | undefined;
   membersAccountId: string[];
   roomName: string | null;
 }
 export const createRoomHandler = async ({
   database,
-  accountId,
+  userId,
   membersAccountId,
   roomName,
 }: CreateRoomHandlerOptions): Promise<Room> => {
-  if (!accountId) {
+  if (!userId) {
     throw new UnauthorizedError({
       code: "account-id-not-found-in-request",
       message: "A account id wasn't found in the request object",
@@ -28,7 +28,7 @@ export const createRoomHandler = async ({
   const roomType: RoomType = membersAccountId.length === 1 ? "DIRECT" : "GROUP";
 
   const room = await createRoom(database, {
-    accountId,
+    accountId: userId,
     membersAccountId,
     roomName,
     roomType,

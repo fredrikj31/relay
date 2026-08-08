@@ -5,9 +5,13 @@ import { useAuth } from "../../providers/auth";
 
 export const AuthenticatedRouteLayout = () => {
   const { isNavbarOpen, setIsNavbarOpen } = useNavbar();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isPending } = useAuth();
 
-  if (!isAuthenticated) {
+  if (isPending) {
+    return null;
+  }
+
+  if (!isAuthenticated && !isPending) {
     return <Navigate to="/login" replace />;
   }
 
