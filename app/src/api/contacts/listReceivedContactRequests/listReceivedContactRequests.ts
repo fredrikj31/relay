@@ -1,5 +1,5 @@
 import { apiClient } from "../../client";
-import { Account, AccountSchema } from "../../../types/Account";
+import { User, UserSchema } from "../../../types/User";
 import { ContactRequest, ContactRequestSchema } from "../../../types/Contact";
 
 export const listReceivedContactRequests = async (): Promise<
@@ -12,7 +12,7 @@ export const listReceivedContactRequests = async (): Promise<
     | "senderAccountId"
     | "status"
   > & {
-    account: Pick<Account, "id" | "username" | "firstName" | "lastName">;
+    user: User;
   })[]
 > => {
   try {
@@ -26,12 +26,7 @@ export const listReceivedContactRequests = async (): Promise<
       status: true,
     })
       .extend({
-        account: AccountSchema.pick({
-          id: true,
-          username: true,
-          firstName: true,
-          lastName: true,
-        }),
+        user: UserSchema,
       })
       .array()
       .parse(data);

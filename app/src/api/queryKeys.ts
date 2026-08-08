@@ -1,5 +1,4 @@
 export const queryKeys = {
-  currentAccount: ["accounts", "me"] as const,
   contacts: {
     list: ["contacts", "list"] as const,
     requests: {
