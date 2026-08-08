@@ -28,8 +28,7 @@ export function SignupForm({ className, ...props }: ComponentProps<"div">) {
   const [isShowingPassword, setIsShowingPassword] = useState<boolean>(false);
   const emailInputRef = useRef<HTMLInputElement>(null);
   const usernameInputRef = useRef<HTMLInputElement>(null);
-  const firstNameInputRef = useRef<HTMLInputElement>(null);
-  const lastNameInputRef = useRef<HTMLInputElement>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
 
   const { signup } = useAuth();
@@ -37,17 +36,15 @@ export function SignupForm({ className, ...props }: ComponentProps<"div">) {
   const signupHandler = () => {
     const email = emailInputRef.current?.value;
     const username = usernameInputRef.current?.value;
-    const firstName = firstNameInputRef.current?.value;
-    const lastName = lastNameInputRef.current?.value;
+    const name = nameInputRef.current?.value;
     const password = passwordInputRef.current?.value;
 
-    if (!email || !username || !firstName || !lastName || !password) return;
+    if (!email || !username || !name || !password) return;
 
     signup({
       email,
       username,
-      firstName,
-      lastName,
+      name,
       password,
     });
   };
@@ -89,27 +86,15 @@ export function SignupForm({ className, ...props }: ComponentProps<"div">) {
                   </InputGroupAddon>
                 </InputGroup>
               </Field>
-              <Field className="grid grid-cols-2 gap-4">
-                <Field>
-                  <FieldLabel htmlFor="firstName">First Name</FieldLabel>
-                  <Input
-                    ref={firstNameInputRef}
-                    id="firstName"
-                    type="text"
-                    required
-                    placeholder="John"
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
-                  <Input
-                    ref={lastNameInputRef}
-                    id="lastName"
-                    type="text"
-                    required
-                    placeholder="Doe"
-                  />
-                </Field>
+              <Field>
+                <FieldLabel htmlFor="name">Name</FieldLabel>
+                <Input
+                  ref={nameInputRef}
+                  id="name"
+                  type="text"
+                  required
+                  placeholder="John Doe"
+                />
               </Field>
               <Field>
                 <FieldLabel htmlFor="password">Password</FieldLabel>
