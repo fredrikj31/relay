@@ -48,7 +48,7 @@ services:
 
   migrate:
     container_name: relay-migrate
-    image: relay-backend:latest
+    image: fredrikj31/relay-backend:latest
     profiles:
       - prod
     environment:
@@ -72,7 +72,7 @@ services:
 
   backend:
     container_name: relay-backend
-    image: relay-backend:latest
+    image: fredrikj31/relay-backend:latest
     restart: always
     profiles:
       - prod
@@ -97,7 +97,7 @@ services:
 
   frontend:
     container_name: relay-frontend
-    image: relay-frontend:latest
+    image: fredrikj31/relay-frontend:latest
     restart: always
     profiles:
       - prod
