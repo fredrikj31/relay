@@ -19,7 +19,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - database-data:/var/lib/postgresql # store data from postgresql in the volume
+      - database-data:/var/lib/postgresql
     logging: *default-logging
 
   # ----- PRODUCTION -----
@@ -87,7 +87,7 @@ services:
       BETTER_AUTH_URL: ${BETTER_AUTH_URL}
     networks:
       - relay-network
-      # - cloudflared
+      - cloudflared
     ports:
       - 4002:3000
     depends_on:
@@ -103,16 +103,16 @@ services:
       - prod
     environment:
       MY_APP_API_BASE_URL: ${MY_APP_API_BASE_URL}
-    # networks:
-    # - cloudflared
+    networks:
+      - cloudflared
     ports:
       - 4003:80
 
 networks:
   relay-network:
     driver: bridge
-  # cloudflared:
-  #   external: true
+  cloudflared:
+    external: true
 
 volumes:
   database-data:
