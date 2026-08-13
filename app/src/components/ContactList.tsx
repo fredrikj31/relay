@@ -322,7 +322,7 @@ export function ContactList() {
               const { user } = sentContactRequest;
               return (
                 <li
-                  key={sentContactRequest.id}
+                  key={sentContactRequest.contactRequest.id}
                   className="flex w-full flex-col gap-2"
                 >
                   <div className="flex flex-row items-center gap-2">
@@ -348,8 +348,8 @@ export function ContactList() {
                     variant="destructive"
                     onClick={() =>
                       deleteContactRequestHandler({
-                        contactRequestId: sentContactRequest.id,
-                        contactUsername: user.username ?? "",
+                        contactRequestId: sentContactRequest.contactRequest.id,
+                        contactUsername: user.username,
                       })
                     }
                   >
