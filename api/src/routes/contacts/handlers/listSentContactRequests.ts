@@ -1,20 +1,15 @@
-import { CommonQueryMethods } from "slonik";
-import { ContactRequest } from "../../../types/contact";
-import { User } from "../../../types/user";
-import { listSentContactRequests } from "../../../services/database/queries/contact/listSentContactRequests";
+import { ContactRequest } from "../../../services/drizzle-database/schemas/contact";
+import { User } from "../../../services/drizzle-database/schemas/auth";
+import { listSentContactRequests } from "../../../services/drizzle-database/queries/contact/listSentContactRequests";
 import { UnauthorizedError } from "../../../errors/client";
 
 interface ListSentContactRequestsHandlerOptions {
-  database: CommonQueryMethods;
   userId: string | undefined;
 }
 export const listSentContactRequestsHandler = async ({
-  database,
   userId,
 }: ListSentContactRequestsHandlerOptions): Promise<
-  (Omit<ContactRequest, "senderAccountId"> & {
-    user: User;
-  })[]
+  { contactRequest: ContactRequest; user: User }[]
 > => {
   if (!userId) {
     throw new UnauthorizedError({
@@ -23,9 +18,9 @@ export const listSentContactRequestsHandler = async ({
     });
   }
 
-  const sentContactRequests = await listSentContactRequests(database, {
-    accountId: userId,
+  const sentContactRequests = await listSentContactRequests({
+    senderUserId: userId,
   });
 
-  return [...sentContactRequests];
+  return sentContactRequests;
 };
