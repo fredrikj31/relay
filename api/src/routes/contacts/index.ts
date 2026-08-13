@@ -148,9 +148,10 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
         description: "Lists account's sent contact requests to other accounts.",
         tags: ["contacts"],
         response: {
-          "200": ContactRequestSchema.omit({ senderAccountId: true })
-            .extend({
-              user: UserSchema,
+          "200": z
+            .object({
+              contactRequest: drizzleContactRequestSchema,
+              user: drizzleUserSchema,
             })
             .array(),
         },
@@ -159,7 +160,6 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
     async (req, res) => {
       const userId = req.userId;
       const sentContactRequests = await listSentContactRequestsHandler({
-        database,
         userId,
       });
 
