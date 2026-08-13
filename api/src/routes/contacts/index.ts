@@ -10,6 +10,7 @@ import { acceptOrDeclineContactRequest } from "./handlers/acceptOrDeclineContact
 import { listAccountContactsHandler } from "./handlers/listAccountContacts";
 import { listSentContactRequestsHandler } from "./handlers/listSentContactRequests";
 import { listReceivedContactRequestsHandler } from "./handlers/listReceivedContactRequests";
+import { ContactRequestSchema as drizzleContactRequestSchema } from "../../services/drizzle-database/schemas/contact";
 
 export const contactRoutes: FastifyPluginAsync = async (instance) => {
   const app = instance.withTypeProvider<ZodTypeProvider>();
@@ -58,7 +59,7 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
           username: z.string(),
         }),
         response: {
-          "200": ContactRequestSchema,
+          "200": drizzleContactRequestSchema,
         },
       },
     },
@@ -66,7 +67,6 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
       const userId = req.userId;
       const { username } = req.body;
       const contactRequest = await createContactRequestHandler({
-        database,
         userId,
         username,
       });

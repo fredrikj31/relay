@@ -1,16 +1,13 @@
-import { CommonQueryMethods } from "slonik";
-import { ContactRequest } from "../../../types/contact";
-import { createContactRequest } from "../../../services/database/queries/contact/createContactRequest";
 import { BadRequestError, UnauthorizedError } from "../../../errors/client";
-import { getUserByUsername } from "../../../services/database/queries/user/getUserByUsername";
+import { getUserByUsername } from "../../../services/drizzle-database/queries/user/getUserByUsername";
+import { ContactRequest } from "../../../services/drizzle-database/schemas/contact";
+import { createContactRequest } from "../../../services/drizzle-database/queries/contact/createContactRequest";
 
 interface CreateContactRequestHandlerOptions {
-  database: CommonQueryMethods;
   userId: string | undefined;
   username: string;
 }
 export const createContactRequestHandler = async ({
-  database,
   userId,
   username,
 }: CreateContactRequestHandlerOptions): Promise<ContactRequest> => {
@@ -21,7 +18,7 @@ export const createContactRequestHandler = async ({
     });
   }
 
-  const contactUser = await getUserByUsername(database, { username });
+  const contactUser = await getUserByUsername({ username });
 
   if (userId === contactUser.id) {
     throw new BadRequestError({
@@ -30,9 +27,9 @@ export const createContactRequestHandler = async ({
     });
   }
 
-  const contactRequest = await createContactRequest(database, {
-    accountId: userId,
-    contactId: contactUser.id,
+  const contactRequest = await createContactRequest({
+    senderUserId: userId,
+    receiverUserId: contactUser.id,
   });
 
   return contactRequest;
