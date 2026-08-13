@@ -2,7 +2,13 @@ import { defineRelations } from "drizzle-orm";
 import { account, session, user, verification } from "./schemas/auth";
 
 export const relations = defineRelations(
-  { user, session, account, verification },
+  {
+    // Auth
+    user,
+    session,
+    account,
+    verification,
+  },
   (r) => ({
     user: {
       sessions: r.many.session(),
