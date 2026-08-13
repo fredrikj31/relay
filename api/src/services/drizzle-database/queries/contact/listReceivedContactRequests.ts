@@ -2,15 +2,25 @@ import { databaseClient } from "../../client";
 import { ContactRequest, contactRequest } from "../../schemas/contact";
 import { logger } from "../../../../logger";
 import { InternalServerError } from "../../../../errors/server";
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
+import { User, user } from "../../schemas/auth";
 
 export const listReceivedContactRequests = async ({
   receiverUserId,
-}: Pick<ContactRequest, "receiverUserId">): Promise<ContactRequest[]> => {
+}: Pick<ContactRequest, "receiverUserId">): Promise<
+  { contactRequest: ContactRequest; user: User }[]
+> => {
   const rows = await databaseClient
     .select()
     .from(contactRequest)
-    .where(eq(contactRequest.receiverUserId, receiverUserId))
+    .innerJoin(user, eq(contactRequest.senderUserId, user.id))
+    .where(
+      and(
+        eq(contactRequest.receiverUserId, receiverUserId),
+        eq(contactRequest.status, "PENDING"),
+        isNull(contactRequest.deletedAt),
+      ),
+    )
     .catch((error) => {
       logger.error(error, "Error while listing received contact requests.");
       throw new InternalServerError({
@@ -20,5 +30,10 @@ export const listReceivedContactRequests = async ({
       });
     });
 
-  return rows;
+  const mappedRows = rows.map((item) => ({
+    contactRequest: item.contact_request,
+    user: item.user,
+  }));
+
+  return mappedRows;
 };
