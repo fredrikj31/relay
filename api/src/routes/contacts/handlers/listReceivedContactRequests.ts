@@ -1,21 +1,13 @@
-import { CommonQueryMethods } from "slonik";
-import { ContactRequest } from "../../../types/contact";
-import { User } from "../../../types/user";
-import { listReceivedContactRequests } from "../../../services/database/queries/contact/listReceivedContactRequests";
 import { UnauthorizedError } from "../../../errors/client";
+import { ContactRequest } from "../../../services/drizzle-database/schemas/contact";
+import { listReceivedContactRequests } from "../../../services/drizzle-database/queries/contact/listReceivedContactRequests";
 
 interface ListReceivedContactRequestsHandlerOptions {
-  database: CommonQueryMethods;
   userId: string | undefined;
 }
 export const listReceivedContactRequestsHandler = async ({
-  database,
   userId,
-}: ListReceivedContactRequestsHandlerOptions): Promise<
-  (Omit<ContactRequest, "receiverAccountId"> & {
-    user: User;
-  })[]
-> => {
+}: ListReceivedContactRequestsHandlerOptions): Promise<ContactRequest[]> => {
   if (!userId) {
     throw new UnauthorizedError({
       code: "account-id-not-found-in-request",
@@ -23,8 +15,8 @@ export const listReceivedContactRequestsHandler = async ({
     });
   }
 
-  const receivedContactRequests = await listReceivedContactRequests(database, {
-    accountId: userId,
+  const receivedContactRequests = await listReceivedContactRequests({
+    receiverUserId: userId,
   });
 
   return [...receivedContactRequests];
