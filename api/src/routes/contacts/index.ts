@@ -10,6 +10,7 @@ import { acceptOrDeclineContactRequest } from "./handlers/acceptOrDeclineContact
 import { listAccountContactsHandler } from "./handlers/listAccountContacts";
 import { listSentContactRequestsHandler } from "./handlers/listSentContactRequests";
 import { listReceivedContactRequestsHandler } from "./handlers/listReceivedContactRequests";
+import { UserSchema as drizzleUserSchema } from "../../services/drizzle-database/schemas/auth";
 import { ContactRequestSchema as drizzleContactRequestSchema } from "../../services/drizzle-database/schemas/contact";
 
 export const contactRoutes: FastifyPluginAsync = async (instance) => {
@@ -176,9 +177,10 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
           "Lists account's received contact requests to other accounts.",
         tags: ["contacts"],
         response: {
-          "200": ContactRequestSchema.omit({ receiverAccountId: true })
-            .extend({
-              user: UserSchema,
+          "200": z
+            .object({
+              contactRequest: drizzleContactRequestSchema,
+              user: drizzleUserSchema,
             })
             .array(),
         },
@@ -187,7 +189,6 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
     async (req, res) => {
       const userId = req.userId;
       const receivedContactRequests = await listReceivedContactRequestsHandler({
-        database,
         userId,
       });
 

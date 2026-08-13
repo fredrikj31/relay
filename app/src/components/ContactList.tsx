@@ -257,7 +257,7 @@ export function ContactList() {
 
               return (
                 <li
-                  key={receivedContactRequest.id}
+                  key={receivedContactRequest.contactRequest.id}
                   className="flex w-full flex-col gap-2"
                 >
                   <div className="flex flex-row items-center gap-2">
@@ -284,7 +284,8 @@ export function ContactList() {
                       variant="outline"
                       onClick={() =>
                         acceptOrDeclineContactRequestHandler({
-                          contactRequestId: receivedContactRequest.id,
+                          contactRequestId:
+                            receivedContactRequest.contactRequest.id,
                           status: "declined",
                           senderUsername: receivedContactRequest.user.username,
                         })
@@ -297,7 +298,8 @@ export function ContactList() {
                       variant="default"
                       onClick={() =>
                         acceptOrDeclineContactRequestHandler({
-                          contactRequestId: receivedContactRequest.id,
+                          contactRequestId:
+                            receivedContactRequest.contactRequest.id,
                           status: "accepted",
                           senderUsername: receivedContactRequest.user.username,
                         })
@@ -347,7 +349,7 @@ export function ContactList() {
                     onClick={() =>
                       deleteContactRequestHandler({
                         contactRequestId: sentContactRequest.id,
-                        contactUsername: user.username,
+                        contactUsername: user.username ?? "",
                       })
                     }
                   >
