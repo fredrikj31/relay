@@ -1,17 +1,14 @@
-import { CommonQueryMethods } from "slonik";
-import { ContactRequest } from "../../../types/contact";
-import { BadRequestError, UnauthorizedError } from "../../../errors/client";
-import { updateContactRequest } from "../../../services/database/queries/contact/updateContactRequest";
-import { createContact } from "../../../services/database/queries/contact/createContact";
+import { ContactRequest } from "../../../services/drizzle-database/schemas/contact";
+import { UnauthorizedError } from "../../../errors/client";
+import { databaseClient } from "../../../services/drizzle-database/client";
+import { updateContactRequest } from "../../../services/drizzle-database/queries/contact/updateContactRequest";
 
 interface AcceptOrDeclineContactRequestHandlerOptions {
-  database: CommonQueryMethods;
   status: "accepted" | "declined";
   userId: string | undefined;
   requestId: string;
 }
 export const acceptOrDeclineContactRequest = async ({
-  database,
   status,
   userId,
   requestId,
@@ -23,43 +20,42 @@ export const acceptOrDeclineContactRequest = async ({
     });
   }
 
-  if (status === "accepted") {
-    const contactRequest = database.transaction(async (transaction) => {
-      const contactRequest = await updateContactRequest(transaction, {
-        accountId: userId,
-        requestId,
-        status: "ACCEPTED",
-      });
+  switch (status) {
+    case "accepted": {
+      const contactRequest = await databaseClient.transaction(
+        async (transaction) => {
+          const contactRequest = await updateContactRequest({
+            databaseClient: transaction,
+            id: requestId,
+            receiverUserId: userId,
+            status: "ACCEPTED",
+          });
 
-      await createContact(transaction, {
-        accountId: contactRequest.senderAccountId,
-        contactId: contactRequest.receiverAccountId,
-      });
-      await createContact(transaction, {
-        accountId: contactRequest.receiverAccountId,
-        contactId: contactRequest.senderAccountId,
-      });
+          // TODO: Create contact
 
-      return contactRequest;
-    });
-    return contactRequest;
-  }
-
-  if (status === "declined") {
-    const contactRequest = database.transaction(async (transaction) => {
-      const contactRequest = await updateContactRequest(transaction, {
-        accountId: userId,
-        requestId,
-        status: "DECLINED",
-      });
+          return contactRequest;
+        },
+      );
 
       return contactRequest;
-    });
-    return contactRequest;
-  }
+    }
+    case "declined": {
+      const contactRequest = await databaseClient.transaction(
+        async (transaction) => {
+          const contactRequest = await updateContactRequest({
+            databaseClient: transaction,
+            id: requestId,
+            receiverUserId: userId,
+            status: "DECLINED",
+          });
 
-  throw new BadRequestError({
-    code: "contact-request-accept-decline-status-unknown",
-    message: 'The provided status was not either "accepted" or "declined"',
-  });
+          return contactRequest;
+        },
+      );
+
+      return contactRequest;
+    }
+    default:
+      return status satisfies never;
+  }
 };

@@ -2,7 +2,7 @@ import { FastifyPluginAsync } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { validateSession } from "../../hooks/validateSession";
 import z from "zod";
-import { ContactRequestSchema, ContactSchema } from "../../types/contact";
+import { ContactSchema } from "../../types/contact";
 import { UserSchema } from "../../types/user";
 import { createContactRequestHandler } from "./handlers/createContactRequest";
 import { deleteContactRequestHandler } from "./handlers/deleteContactRequest";
@@ -119,7 +119,7 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
           status: z.enum(["accepted", "declined"]),
         }),
         response: {
-          "200": ContactRequestSchema,
+          "200": drizzleContactRequestSchema,
         },
       },
     },
@@ -128,7 +128,6 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
       const { requestId } = req.params;
       const { status } = req.body;
       const contactRequest = await acceptOrDeclineContactRequest({
-        database,
         userId,
         requestId,
         status,
