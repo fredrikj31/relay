@@ -88,7 +88,7 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
           requestId: z.uuid(),
         }),
         response: {
-          "200": ContactRequestSchema,
+          "200": drizzleContactRequestSchema,
         },
       },
     },
@@ -96,7 +96,6 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
       const userId = req.userId;
       const { requestId } = req.params;
       const contactRequest = await deleteContactRequestHandler({
-        database,
         userId,
         requestId,
       });
