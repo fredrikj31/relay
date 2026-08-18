@@ -1,15 +1,12 @@
-import { CommonQueryMethods } from "slonik";
 import { UnauthorizedError } from "../../../errors/client";
-import { deleteContactRequest } from "../../../services/database/queries/contact/deleteContactRequest";
-import { ContactRequest } from "../../../types/contact";
+import { ContactRequest } from "../../../services/drizzle-database/schemas/contact";
+import { deleteContactRequest } from "../../../services/drizzle-database/queries/contact/deleteContactRequest";
 
 interface DeleteContactRequestHandlerOptions {
-  database: CommonQueryMethods;
   userId: string | undefined;
   requestId: string;
 }
 export const deleteContactRequestHandler = async ({
-  database,
   userId,
   requestId,
 }: DeleteContactRequestHandlerOptions): Promise<ContactRequest> => {
@@ -20,9 +17,9 @@ export const deleteContactRequestHandler = async ({
     });
   }
 
-  const contactRequest = await deleteContactRequest(database, {
-    accountId: userId,
-    requestId,
+  const contactRequest = await deleteContactRequest({
+    id: requestId,
+    senderUserId: userId,
   });
 
   return contactRequest;
