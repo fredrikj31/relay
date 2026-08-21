@@ -8,7 +8,7 @@ export const authRoutes: FastifyPluginAsync = async (instance) => {
     method: ["GET", "POST"],
     url: "/auth/*",
     schema: {
-      tags: ["auth"],
+      hide: true,
     },
     async handler(request, reply) {
       try {

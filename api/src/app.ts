@@ -23,6 +23,10 @@ app
         disabled: true,
       },
       hideClientButton: true,
+      sources: [
+        { url: "/api/docs/json", title: "API" }, // API endpoints
+        { url: "/api/auth/open-api/generate-schema", title: "Auth" }, // Better Auth schema generation endpoint
+      ],
     },
   })
   .register(fastifyCors, {
