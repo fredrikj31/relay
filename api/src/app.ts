@@ -6,6 +6,8 @@ import { swaggerConfig } from "./plugins/swagger";
 import { routes } from "./routes";
 import { config } from "./config";
 import { databasePlugin } from "./services/database/client";
+import { drizzleDatabasePlugin } from "./services/drizzle-database/client";
+import { authPlugin } from "./services/auth/client";
 
 const app: FastifyInstance = Fastify({
   logger: true,
@@ -47,6 +49,16 @@ app
     dbUser: config.database.user,
     dbPassword: config.database.password,
     dbName: config.database.name,
+  })
+  .register(drizzleDatabasePlugin, {
+    dbHost: config.database.host,
+    dbPort: config.database.port,
+    dbUser: config.database.user,
+    dbPassword: config.database.password,
+    dbName: config.database.name,
+  })
+  .register(authPlugin, {
+    database: app.drizzleDatabase,
   })
   .after(() => {
     app.register(routes, { prefix: "/api" });
