@@ -2,12 +2,15 @@ import { BadRequestError, UnauthorizedError } from "../../../errors/client";
 import { getUserByUsername } from "../../../services/drizzle-database/queries/user/getUserByUsername";
 import { ContactRequest } from "../../../services/drizzle-database/schemas/contact";
 import { createContactRequest } from "../../../services/drizzle-database/queries/contact/createContactRequest";
+import { Database } from "../../../services/drizzle-database/client";
 
 interface CreateContactRequestHandlerOptions {
+  database: Database;
   userId: string | undefined;
   username: string;
 }
 export const createContactRequestHandler = async ({
+  database,
   userId,
   username,
 }: CreateContactRequestHandlerOptions): Promise<ContactRequest> => {
@@ -18,7 +21,7 @@ export const createContactRequestHandler = async ({
     });
   }
 
-  const contactUser = await getUserByUsername({ username });
+  const contactUser = await getUserByUsername(database, { username });
 
   if (userId === contactUser.id) {
     throw new BadRequestError({
@@ -27,7 +30,7 @@ export const createContactRequestHandler = async ({
     });
   }
 
-  const contactRequest = await createContactRequest({
+  const contactRequest = await createContactRequest(database, {
     senderUserId: userId,
     receiverUserId: contactUser.id,
   });

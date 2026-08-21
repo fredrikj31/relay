@@ -1,14 +1,14 @@
-import { databaseClient } from "../../client";
+import { Database } from "../../client";
 import { ContactRequest, contactRequest } from "../../schemas/contact";
 import { logger } from "../../../../logger";
 import { InternalServerError } from "../../../../errors/server";
 import { and, eq } from "drizzle-orm";
 
-export const deleteContactRequest = async ({
-  id,
-  senderUserId,
-}: Pick<ContactRequest, "id" | "senderUserId">): Promise<ContactRequest> => {
-  const result = await databaseClient
+export const deleteContactRequest = async (
+  database: Database,
+  { id, senderUserId }: Pick<ContactRequest, "id" | "senderUserId">,
+): Promise<ContactRequest> => {
+  const result = await database
     .update(contactRequest)
     .set({ deletedAt: new Date() })
     .where(

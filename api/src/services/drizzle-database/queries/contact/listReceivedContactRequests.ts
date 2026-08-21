@@ -1,16 +1,15 @@
-import { databaseClient } from "../../client";
+import { Database } from "../../client";
 import { ContactRequest, contactRequest } from "../../schemas/contact";
 import { logger } from "../../../../logger";
 import { InternalServerError } from "../../../../errors/server";
 import { and, eq, isNull } from "drizzle-orm";
 import { User, user } from "../../schemas/auth";
 
-export const listReceivedContactRequests = async ({
-  receiverUserId,
-}: Pick<ContactRequest, "receiverUserId">): Promise<
-  { contactRequest: ContactRequest; user: User }[]
-> => {
-  const rows = await databaseClient
+export const listReceivedContactRequests = async (
+  database: Database,
+  { receiverUserId }: Pick<ContactRequest, "receiverUserId">,
+): Promise<{ contactRequest: ContactRequest; user: User }[]> => {
+  const rows = await database
     .select()
     .from(contactRequest)
     .innerJoin(user, eq(contactRequest.senderUserId, user.id))

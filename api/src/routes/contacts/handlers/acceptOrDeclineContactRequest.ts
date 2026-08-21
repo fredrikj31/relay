@@ -1,14 +1,16 @@
 import { ContactRequest } from "../../../services/drizzle-database/schemas/contact";
 import { UnauthorizedError } from "../../../errors/client";
-import { databaseClient } from "../../../services/drizzle-database/client";
+import { Database } from "../../../services/drizzle-database/client";
 import { updateContactRequest } from "../../../services/drizzle-database/queries/contact/updateContactRequest";
 
 interface AcceptOrDeclineContactRequestHandlerOptions {
+  database: Database;
   status: "accepted" | "declined";
   userId: string | undefined;
   requestId: string;
 }
 export const acceptOrDeclineContactRequest = async ({
+  database,
   status,
   userId,
   requestId,
@@ -22,36 +24,30 @@ export const acceptOrDeclineContactRequest = async ({
 
   switch (status) {
     case "accepted": {
-      const contactRequest = await databaseClient.transaction(
-        async (transaction) => {
-          const contactRequest = await updateContactRequest({
-            databaseClient: transaction,
-            id: requestId,
-            receiverUserId: userId,
-            status: "ACCEPTED",
-          });
+      const contactRequest = await database.transaction(async (transaction) => {
+        const contactRequest = await updateContactRequest(transaction, {
+          id: requestId,
+          receiverUserId: userId,
+          status: "ACCEPTED",
+        });
 
-          // TODO: Create contact
+        // TODO: Create contact
 
-          return contactRequest;
-        },
-      );
+        return contactRequest;
+      });
 
       return contactRequest;
     }
     case "declined": {
-      const contactRequest = await databaseClient.transaction(
-        async (transaction) => {
-          const contactRequest = await updateContactRequest({
-            databaseClient: transaction,
-            id: requestId,
-            receiverUserId: userId,
-            status: "DECLINED",
-          });
+      const contactRequest = await database.transaction(async (transaction) => {
+        const contactRequest = await updateContactRequest(transaction, {
+          id: requestId,
+          receiverUserId: userId,
+          status: "DECLINED",
+        });
 
-          return contactRequest;
-        },
-      );
+        return contactRequest;
+      });
 
       return contactRequest;
     }

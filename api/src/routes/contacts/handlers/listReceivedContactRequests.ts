@@ -2,11 +2,14 @@ import { UnauthorizedError } from "../../../errors/client";
 import { ContactRequest } from "../../../services/drizzle-database/schemas/contact";
 import { listReceivedContactRequests } from "../../../services/drizzle-database/queries/contact/listReceivedContactRequests";
 import { User } from "../../../services/drizzle-database/schemas/auth";
+import { Database } from "../../../services/drizzle-database/client";
 
 interface ListReceivedContactRequestsHandlerOptions {
+  database: Database;
   userId: string | undefined;
 }
 export const listReceivedContactRequestsHandler = async ({
+  database,
   userId,
 }: ListReceivedContactRequestsHandlerOptions): Promise<
   { contactRequest: ContactRequest; user: User }[]
@@ -18,7 +21,7 @@ export const listReceivedContactRequestsHandler = async ({
     });
   }
 
-  const receivedContactRequests = await listReceivedContactRequests({
+  const receivedContactRequests = await listReceivedContactRequests(database, {
     receiverUserId: userId,
   });
 
