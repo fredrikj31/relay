@@ -1,12 +1,15 @@
 import { UnauthorizedError } from "../../../errors/client";
 import { ContactRequest } from "../../../services/drizzle-database/schemas/contact";
 import { deleteContactRequest } from "../../../services/drizzle-database/queries/contact/deleteContactRequest";
+import { Database } from "../../../services/drizzle-database/client";
 
 interface DeleteContactRequestHandlerOptions {
+  database: Database;
   userId: string | undefined;
   requestId: string;
 }
 export const deleteContactRequestHandler = async ({
+  database,
   userId,
   requestId,
 }: DeleteContactRequestHandlerOptions): Promise<ContactRequest> => {
@@ -17,7 +20,7 @@ export const deleteContactRequestHandler = async ({
     });
   }
 
-  const contactRequest = await deleteContactRequest({
+  const contactRequest = await deleteContactRequest(database, {
     id: requestId,
     senderUserId: userId,
   });

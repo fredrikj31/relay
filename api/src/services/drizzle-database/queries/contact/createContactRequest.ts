@@ -1,17 +1,17 @@
 import { randomUUID } from "crypto";
-import { databaseClient } from "../../client";
+import { Database } from "../../client";
 import { ContactRequest, contactRequest } from "../../schemas/contact";
 import { logger } from "../../../../logger";
 import { InternalServerError } from "../../../../errors/server";
 
-export const createContactRequest = async ({
-  senderUserId,
-  receiverUserId,
-}: Pick<
-  ContactRequest,
-  "senderUserId" | "receiverUserId"
->): Promise<ContactRequest> => {
-  const result = await databaseClient
+export const createContactRequest = async (
+  database: Database,
+  {
+    senderUserId,
+    receiverUserId,
+  }: Pick<ContactRequest, "senderUserId" | "receiverUserId">,
+): Promise<ContactRequest> => {
+  const result = await database
     .insert(contactRequest)
     .values({
       id: randomUUID(),

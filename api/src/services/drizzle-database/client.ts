@@ -1,14 +1,50 @@
 import { drizzle } from "drizzle-orm/node-postgres";
-import { config } from "../../config";
 import { relations } from "./relations";
+import fastifyPlugin from "fastify-plugin";
+import { logger } from "../../logger";
+import { FastifyInstance } from "fastify";
 
-export const databaseClient = drizzle({
-  connection: {
-    connectionString: `postgresql://${config.database.user}:${config.database.password}@${config.database.host}:${config.database.port}/${config.database.name}`,
-  },
-  relations,
-});
+interface DatabasePluginOptions {
+  dbHost: string;
+  dbPort: string;
+  dbUser: string;
+  dbPassword: string;
+  dbName: string;
+}
 
-type DatabaseClient = typeof databaseClient;
+const createDatabaseClient = (opts: DatabasePluginOptions) =>
+  drizzle({
+    connection: {
+      connectionString: `postgresql://${opts.dbUser}:${opts.dbPassword}@${opts.dbHost}:${opts.dbPort}/${opts.dbName}`,
+    },
+    relations,
+  });
+
+type DatabaseClient = ReturnType<typeof createDatabaseClient>;
 type Transaction = Parameters<Parameters<DatabaseClient["transaction"]>[0]>[0];
 export type Database = DatabaseClient | Transaction;
+
+const database = async (
+  fastify: FastifyInstance,
+  opts: DatabasePluginOptions,
+) => {
+  try {
+    const databaseClient = createDatabaseClient(opts);
+    fastify.decorate("drizzleDatabase", databaseClient);
+  } catch (error: unknown) {
+    logger.fatal(error, "Unable to connect to database");
+    throw new Error("Unable to connect to database!", {
+      cause: error,
+    });
+  }
+};
+
+export const drizzleDatabasePlugin = fastifyPlugin(database, {
+  name: "drizzle-database",
+});
+
+declare module "fastify" {
+  export interface FastifyInstance {
+    drizzleDatabase: DatabaseClient;
+  }
+}

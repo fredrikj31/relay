@@ -4,16 +4,15 @@ import { logger } from "../../../../logger";
 import { InternalServerError } from "../../../../errors/server";
 import { and, eq, isNull } from "drizzle-orm";
 
-export const updateContactRequest = async ({
-  databaseClient,
-  id,
-  receiverUserId,
-  status,
-}: { databaseClient: Database } & Pick<
-  ContactRequest,
-  "id" | "receiverUserId" | "status"
->): Promise<ContactRequest> => {
-  const result = await databaseClient
+export const updateContactRequest = async (
+  database: Database,
+  {
+    id,
+    receiverUserId,
+    status,
+  }: Pick<ContactRequest, "id" | "receiverUserId" | "status">,
+): Promise<ContactRequest> => {
+  const result = await database
     .update(contactRequest)
     .set({ status, updatedAt: new Date() })
     .where(

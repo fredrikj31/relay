@@ -16,6 +16,7 @@ import { ContactRequestSchema as drizzleContactRequestSchema } from "../../servi
 export const contactRoutes: FastifyPluginAsync = async (instance) => {
   const app = instance.withTypeProvider<ZodTypeProvider>();
   const database = instance.database;
+  const drizzleDatabase = instance.drizzleDatabase;
 
   app.get(
     "/",
@@ -68,6 +69,7 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
       const userId = req.userId;
       const { username } = req.body;
       const contactRequest = await createContactRequestHandler({
+        database: drizzleDatabase,
         userId,
         username,
       });
@@ -96,6 +98,7 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
       const userId = req.userId;
       const { requestId } = req.params;
       const contactRequest = await deleteContactRequestHandler({
+        database: drizzleDatabase,
         userId,
         requestId,
       });
@@ -128,6 +131,7 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
       const { requestId } = req.params;
       const { status } = req.body;
       const contactRequest = await acceptOrDeclineContactRequest({
+        database: drizzleDatabase,
         userId,
         requestId,
         status,
@@ -158,6 +162,7 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
     async (req, res) => {
       const userId = req.userId;
       const sentContactRequests = await listSentContactRequestsHandler({
+        database: drizzleDatabase,
         userId,
       });
 
@@ -187,6 +192,7 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
     async (req, res) => {
       const userId = req.userId;
       const receivedContactRequests = await listReceivedContactRequestsHandler({
+        database: drizzleDatabase,
         userId,
       });
 

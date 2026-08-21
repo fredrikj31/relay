@@ -2,17 +2,18 @@ import { logger } from "../../../../logger";
 import { InternalServerError } from "../../../../errors/server";
 import { NotFoundError } from "../../../../errors/client";
 import { user, User } from "../../schemas/auth";
-import { databaseClient } from "../../client";
+import { Database } from "../../client";
 import { eq } from "drizzle-orm";
 
 interface GetUserByUsernameOptions {
   username: string;
 }
-export const getUserByUsername = async ({
-  username,
-}: GetUserByUsernameOptions): Promise<User> => {
+export const getUserByUsername = async (
+  database: Database,
+  { username }: GetUserByUsernameOptions,
+): Promise<User> => {
   try {
-    const result = await databaseClient
+    const result = await database
       .select()
       .from(user)
       .where(eq(user.username, username.toLowerCase()));

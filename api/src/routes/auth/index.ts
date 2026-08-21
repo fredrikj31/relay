@@ -1,6 +1,5 @@
 import { FastifyPluginAsync } from "fastify";
 import { fromNodeHeaders } from "better-auth/node";
-import { authClient } from "../../services/auth/client";
 import { logger } from "../../logger";
 
 export const authRoutes: FastifyPluginAsync = async (instance) => {
@@ -24,7 +23,7 @@ export const authRoutes: FastifyPluginAsync = async (instance) => {
           ...(request.body ? { body: JSON.stringify(request.body) } : {}),
         });
         // Process authentication request
-        const response = await authClient.handler(req);
+        const response = await instance.auth.handler(req);
         // Forward response to client
         reply.status(response.status);
         response.headers.forEach((value, key) => reply.header(key, value));
