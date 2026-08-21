@@ -1,13 +1,12 @@
 import { FastifyRequest } from "fastify";
 import { fromNodeHeaders } from "better-auth/node";
-import { authClient } from "../services/auth/client";
 import { UnauthorizedError } from "../errors/client";
 import { InternalServerError } from "../errors/server";
 import { logger } from "../logger";
 
 export const validateSession = () => {
   return async (request: FastifyRequest) => {
-    const session = await authClient.api
+    const session = await request.server.auth.api
       .getSession({ headers: fromNodeHeaders(request.headers) })
       .catch((error) => {
         logger.error(error, "Error while validating session");
