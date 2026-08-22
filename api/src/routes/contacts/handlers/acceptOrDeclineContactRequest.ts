@@ -2,6 +2,7 @@ import { ContactRequest } from "../../../services/drizzle-database/schemas/conta
 import { UnauthorizedError } from "../../../errors/client";
 import { Database } from "../../../services/drizzle-database/client";
 import { updateContactRequest } from "../../../services/drizzle-database/queries/contactRequest/updateContactRequest";
+import { createContact } from "../../../services/drizzle-database/queries/contact/createContact";
 
 interface AcceptOrDeclineContactRequestHandlerOptions {
   database: Database;
@@ -31,7 +32,16 @@ export const acceptOrDeclineContactRequest = async ({
           status: "ACCEPTED",
         });
 
-        // TODO: Create contact
+        await Promise.all([
+          createContact(transaction, {
+            userId: contactRequest.senderUserId,
+            contactId: contactRequest.receiverUserId,
+          }),
+          createContact(transaction, {
+            userId: contactRequest.receiverUserId,
+            contactId: contactRequest.senderUserId,
+          }),
+        ]);
 
         return contactRequest;
       });
