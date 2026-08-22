@@ -1,6 +1,6 @@
 CREATE TYPE "contact_request_status" AS ENUM('PENDING', 'ACCEPTED', 'DECLINED');--> statement-breakpoint
 CREATE TABLE "contact_request" (
-	"id" text PRIMARY KEY,
+	"id" uuid PRIMARY KEY,
 	"created_at" timestamp NOT NULL,
 	"updated_at" timestamp,
 	"deleted_at" timestamp,

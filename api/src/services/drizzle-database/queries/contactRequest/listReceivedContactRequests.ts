@@ -1,30 +1,31 @@
 import { Database } from "../../client";
-import { ContactRequest, contactRequest } from "../../schemas/contact";
+import { ContactRequest, contactRequest } from "../../schemas/contactRequest";
 import { logger } from "../../../../logger";
 import { InternalServerError } from "../../../../errors/server";
 import { and, eq, isNull } from "drizzle-orm";
 import { User, user } from "../../schemas/auth";
 
-export const listSentContactRequests = async (
+export const listReceivedContactRequests = async (
   database: Database,
-  { senderUserId }: Pick<ContactRequest, "senderUserId">,
+  { receiverUserId }: Pick<ContactRequest, "receiverUserId">,
 ): Promise<{ contactRequest: ContactRequest; user: User }[]> => {
   const rows = await database
     .select()
     .from(contactRequest)
-    .innerJoin(user, eq(contactRequest.receiverUserId, user.id))
+    .innerJoin(user, eq(contactRequest.senderUserId, user.id))
     .where(
       and(
-        eq(contactRequest.senderUserId, senderUserId),
+        eq(contactRequest.receiverUserId, receiverUserId),
         eq(contactRequest.status, "PENDING"),
         isNull(contactRequest.deletedAt),
       ),
     )
     .catch((error) => {
-      logger.error(error, "Error while listing sent contact requests.");
+      logger.error(error, "Error while listing received contact requests.");
       throw new InternalServerError({
-        code: "unknown-error-listing-sent-contact-requests",
-        message: "Unknown error when trying to listing sent contact requests",
+        code: "unknown-error-listing-received-contact-requests",
+        message:
+          "Unknown error when trying to listing received contact requests",
       });
     });
 

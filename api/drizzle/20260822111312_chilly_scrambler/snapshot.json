@@ -1,8 +1,8 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "4d861d0e-453e-47ca-9940-d992763a4f01",
-  "prevIds": ["2914ad9f-a21e-4943-9838-8cb712d4bd5f"],
+  "id": "f567a7f5-496e-4342-b2b3-8c64a1eb4d80",
+  "prevIds": ["4d861d0e-453e-47ca-9940-d992763a4f01"],
   "ddl": [
     {
       "values": ["PENDING", "ACCEPTED", "DECLINED"],
@@ -31,6 +31,12 @@
     {
       "isRlsEnabled": false,
       "name": "verification",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "contact",
       "entityType": "tables",
       "schema": "public"
     },
@@ -519,6 +525,84 @@
       "name": "id",
       "entityType": "columns",
       "schema": "public",
+      "table": "contact"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "contact"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "contact"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "contact"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "user_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "contact"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "contact_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "contact"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
       "table": "contact_request"
     },
     {
@@ -666,6 +750,27 @@
       "nameExplicit": true,
       "columns": [
         {
+          "value": "user_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "contact_user_id_index",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "contact"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
           "value": "sender_user_id",
           "isExpression": false,
           "asc": true,
@@ -732,6 +837,32 @@
     },
     {
       "nameExplicit": false,
+      "columns": ["user_id"],
+      "schemaTo": "public",
+      "tableTo": "user",
+      "columnsTo": ["id"],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "contact_user_id_user_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "contact"
+    },
+    {
+      "nameExplicit": false,
+      "columns": ["contact_id"],
+      "schemaTo": "public",
+      "tableTo": "user",
+      "columnsTo": ["id"],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "contact_contact_id_user_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "contact"
+    },
+    {
+      "nameExplicit": false,
       "columns": ["sender_user_id"],
       "schemaTo": "public",
       "tableTo": "user",
@@ -786,6 +917,14 @@
       "name": "verification_pkey",
       "schema": "public",
       "table": "verification",
+      "entityType": "pks"
+    },
+    {
+      "columns": ["id"],
+      "nameExplicit": false,
+      "name": "contact_pkey",
+      "schema": "public",
+      "table": "contact",
       "entityType": "pks"
     },
     {

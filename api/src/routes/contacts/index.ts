@@ -11,7 +11,7 @@ import { listAccountContactsHandler } from "./handlers/listAccountContacts";
 import { listSentContactRequestsHandler } from "./handlers/listSentContactRequests";
 import { listReceivedContactRequestsHandler } from "./handlers/listReceivedContactRequests";
 import { UserSchema as drizzleUserSchema } from "../../services/drizzle-database/schemas/auth";
-import { ContactRequestSchema as drizzleContactRequestSchema } from "../../services/drizzle-database/schemas/contact";
+import { ContactRequestSchema as drizzleContactRequestSchema } from "../../services/drizzle-database/schemas/contactRequest";
 
 export const contactRoutes: FastifyPluginAsync = async (instance) => {
   const app = instance.withTypeProvider<ZodTypeProvider>();

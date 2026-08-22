@@ -1,7 +1,7 @@
 import { BadRequestError, UnauthorizedError } from "../../../errors/client";
 import { getUserByUsername } from "../../../services/drizzle-database/queries/user/getUserByUsername";
-import { ContactRequest } from "../../../services/drizzle-database/schemas/contact";
-import { createContactRequest } from "../../../services/drizzle-database/queries/contact/createContactRequest";
+import { ContactRequest } from "../../../services/drizzle-database/schemas/contactRequest";
+import { createContactRequest } from "../../../services/drizzle-database/queries/contactRequest/createContactRequest";
 import { Database } from "../../../services/drizzle-database/client";
 
 interface CreateContactRequestHandlerOptions {
