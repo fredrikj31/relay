@@ -1,4 +1,11 @@
-import { pgTable, timestamp, text, index, pgEnum } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  timestamp,
+  text,
+  uuid,
+  index,
+  pgEnum,
+} from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { createUpdateSchema } from "drizzle-orm/zod";
 
@@ -11,7 +18,7 @@ export const contactRequestStatusEnum = pgEnum("contact_request_status", [
 export const contactRequest = pgTable(
   "contact_request",
   {
-    id: text("id").notNull().primaryKey(),
+    id: uuid("id").notNull().primaryKey(),
     createdAt: timestamp("created_at").notNull(),
     updatedAt: timestamp("updated_at"),
     deletedAt: timestamp("deleted_at"),
