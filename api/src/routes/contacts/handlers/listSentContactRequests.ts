@@ -1,6 +1,6 @@
-import { ContactRequest } from "../../../services/drizzle-database/schemas/contact";
+import { ContactRequest } from "../../../services/drizzle-database/schemas/contactRequest";
 import { User } from "../../../services/drizzle-database/schemas/auth";
-import { listSentContactRequests } from "../../../services/drizzle-database/queries/contact/listSentContactRequests";
+import { listSentContactRequests } from "../../../services/drizzle-database/queries/contactRequest/listSentContactRequests";
 import { UnauthorizedError } from "../../../errors/client";
 import { Database } from "../../../services/drizzle-database/client";
 

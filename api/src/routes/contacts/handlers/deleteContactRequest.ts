@@ -1,6 +1,6 @@
 import { UnauthorizedError } from "../../../errors/client";
-import { ContactRequest } from "../../../services/drizzle-database/schemas/contact";
-import { deleteContactRequest } from "../../../services/drizzle-database/queries/contact/deleteContactRequest";
+import { ContactRequest } from "../../../services/drizzle-database/schemas/contactRequest";
+import { deleteContactRequest } from "../../../services/drizzle-database/queries/contactRequest/deleteContactRequest";
 import { Database } from "../../../services/drizzle-database/client";
 
 interface DeleteContactRequestHandlerOptions {

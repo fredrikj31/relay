@@ -1,7 +1,7 @@
-import { ContactRequest } from "../../../services/drizzle-database/schemas/contact";
+import { ContactRequest } from "../../../services/drizzle-database/schemas/contactRequest";
 import { UnauthorizedError } from "../../../errors/client";
 import { Database } from "../../../services/drizzle-database/client";
-import { updateContactRequest } from "../../../services/drizzle-database/queries/contact/updateContactRequest";
+import { updateContactRequest } from "../../../services/drizzle-database/queries/contactRequest/updateContactRequest";
 
 interface AcceptOrDeclineContactRequestHandlerOptions {
   database: Database;

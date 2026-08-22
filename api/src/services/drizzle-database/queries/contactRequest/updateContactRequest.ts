@@ -1,5 +1,5 @@
 import { Database } from "../../client";
-import { ContactRequest, contactRequest } from "../../schemas/contact";
+import { ContactRequest, contactRequest } from "../../schemas/contactRequest";
 import { logger } from "../../../../logger";
 import { InternalServerError } from "../../../../errors/server";
 import { and, eq, isNull } from "drizzle-orm";
