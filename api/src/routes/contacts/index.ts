@@ -2,20 +2,18 @@ import { FastifyPluginAsync } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { validateSession } from "../../hooks/validateSession";
 import z from "zod";
-import { ContactSchema } from "../../types/contact";
-import { UserSchema } from "../../types/user";
 import { createContactRequestHandler } from "./handlers/createContactRequest";
 import { deleteContactRequestHandler } from "./handlers/deleteContactRequest";
 import { acceptOrDeclineContactRequest } from "./handlers/acceptOrDeclineContactRequest";
-import { listAccountContactsHandler } from "./handlers/listAccountContacts";
+import { listContactsHandler } from "./handlers/listContacts";
 import { listSentContactRequestsHandler } from "./handlers/listSentContactRequests";
 import { listReceivedContactRequestsHandler } from "./handlers/listReceivedContactRequests";
 import { UserSchema as drizzleUserSchema } from "../../services/drizzle-database/schemas/auth";
+import { ContactSchema as drizzleContactSchema } from "../../services/drizzle-database/schemas/contact";
 import { ContactRequestSchema as drizzleContactRequestSchema } from "../../services/drizzle-database/schemas/contactRequest";
 
 export const contactRoutes: FastifyPluginAsync = async (instance) => {
   const app = instance.withTypeProvider<ZodTypeProvider>();
-  const database = instance.database;
   const drizzleDatabase = instance.drizzleDatabase;
 
   app.get(
@@ -28,21 +26,19 @@ export const contactRoutes: FastifyPluginAsync = async (instance) => {
           "Lists account's contacts and their user profile with details about them.",
         tags: ["contacts"],
         response: {
-          "200": ContactSchema.omit({ accountId: true, contactId: true })
-            .extend({
-              user: UserSchema,
+          "200": z
+            .object({
+              contact: drizzleContactSchema,
+              user: drizzleUserSchema,
             })
-            .array()
-            .describe(
-              "Returns a list of the account's contacts, and their user.",
-            ),
+            .array(),
         },
       },
     },
     async (req, res) => {
       const userId = req.userId;
-      const contacts = await listAccountContactsHandler({
-        database,
+      const contacts = await listContactsHandler({
+        database: drizzleDatabase,
         userId,
       });
       return res.send(contacts);

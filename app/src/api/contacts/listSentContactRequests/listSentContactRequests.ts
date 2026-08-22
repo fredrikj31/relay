@@ -1,6 +1,9 @@
 import { apiClient } from "../../client";
 import { User, UserSchema } from "../../../types/User";
-import { ContactRequest, ContactRequestSchema } from "../../../types/Contact";
+import {
+  ContactRequest,
+  ContactRequestSchema,
+} from "../../../types/ContactRequest";
 import z from "zod";
 
 export const listSentContactRequests = async (): Promise<

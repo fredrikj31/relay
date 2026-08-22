@@ -18,7 +18,6 @@ import {
   AvatarImage,
 } from "@shadcn-ui/components/ui/avatar";
 import { useListContacts } from "../api/contacts/listContacts/useListContacts";
-import { Contact } from "../types/Contact";
 import { User } from "../types/User";
 import {
   InputGroup,
@@ -214,8 +213,8 @@ export function ContactList() {
               </p>
             ) : (
               <ul role="list">
-                {filteredContacts.map((contact) => (
-                  <ContactListItem key={contact.id} contact={contact} />
+                {filteredContacts.map(({ contact, user }) => (
+                  <ContactListItem key={contact.id} user={user} />
                 ))}
               </ul>
             )}
@@ -366,14 +365,12 @@ export function ContactList() {
 }
 
 function ContactListItem({
-  contact,
+  user,
 }: {
-  contact: Pick<Contact, "id" | "createdAt" | "updatedAt" | "deletedAt"> & {
-    user: User;
-  };
+  user: User;
   // TODO: isOnline: boolean
 }) {
-  const { name, username } = contact.user;
+  const { name, username } = user;
   return (
     <li>
       <button
