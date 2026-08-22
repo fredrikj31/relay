@@ -1,5 +1,8 @@
 import { apiClient } from "../../client";
-import { ContactRequest, ContactRequestSchema } from "../../../types/Contact";
+import {
+  ContactRequest,
+  ContactRequestSchema,
+} from "../../../types/ContactRequest";
 
 export const deleteContactRequest = async (
   contactRequestId: string,
