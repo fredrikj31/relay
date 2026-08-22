@@ -1,21 +1,16 @@
 import { apiClient } from "../../client";
 import { User, UserSchema } from "../../../types/User";
 import { Contact, ContactSchema } from "../../../types/Contact";
+import z from "zod";
 
 export const listContacts = async (): Promise<
-  (Pick<Contact, "id" | "createdAt" | "updatedAt" | "deletedAt"> & {
-    user: User;
-  })[]
+  { contact: Contact; user: User }[]
 > => {
   try {
     const { data } = await apiClient.get("/contacts");
-    return ContactSchema.pick({
-      id: true,
-      createdAt: true,
-      updatedAt: true,
-      deletedAt: true,
-    })
-      .extend({
+    return z
+      .object({
+        contact: ContactSchema,
         user: UserSchema,
       })
       .array()

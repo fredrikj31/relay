@@ -5,7 +5,7 @@ export const ContactSchema = z.object({
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime().nullable(),
   deletedAt: z.iso.datetime().nullable(),
-  accountId: z.string(),
+  userId: z.string(),
   contactId: z.string(),
 });
 export type Contact = z.infer<typeof ContactSchema>;
