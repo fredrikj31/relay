@@ -24,7 +24,7 @@
     "prettier": "^3.8.4",
     "tsx": "^4.22.5",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.62.1"
+    "typescript-eslint": "^8.69.0"
   },
   "dependencies": {
     "@fastify/cookie": "^11.0.2",
